@@ -67,4 +67,155 @@ describe('Questioner', () => {
         });
     });
   });
+
+
+  describe('/POST meetup', () => {
+    it('admin should be able to add a new meetup record', (done) => {
+      chai.request('http://localhost:5001/api/v1')
+        .post('/meetups')
+        .send(newData[0])
+        .end((err, res) => {
+          expect(res.statusCode).to.equal(200);
+          done();
+        });
+    });
+
+
+    it('admin should not add a record if topic dont exist', (done) => {
+      chai.request('http://localhost:5001/api/v1')
+        .post('/meetups')
+        .send(testMeetups[1])
+        .end((err, res) => {
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.message).to.equal('No blanck fields');
+          done();
+        });
+    });
+
+    it('admin should not add a record if location dont exist', (done) => {
+      chai.request('http://localhost:5001/api/v1')
+        .post('/meetups')
+        .send(testMeetups[2])
+        .end((err, res) => {
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.message).to.equal('No blanck fields');
+          done();
+        });
+    });
+
+    it('admin should not add a record if happeningOn dont exist', (done) => {
+      chai.request('http://localhost:5001/api/v1')
+        .post('/meetups')
+        .send(testMeetups[3])
+        .end((err, res) => {
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.message).to.equal('No blanck fields');
+          done();
+        });
+    });
+
+    it('admin should not add a record if tags dont exist', (done) => {
+      chai.request('http://localhost:5001/api/v1')
+        .post('/meetups')
+        .send(testMeetups[4])
+        .end((err, res) => {
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.message).to.equal('No blanck fields');
+          done();
+        });
+    });
+
+    it('admin should not add a record if it already exists', (done) => {
+      chai.request('http://localhost:5001/api/v1')
+        .post('/meetups')
+        .send(testMeetups[5])
+        .end((err, res) => {
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.message).to.equal('meetup already exists');
+          done();
+        });
+    });
+  });
+
+
+  describe('/POST questions', () => {
+    it('user should be able to post a question', (done) => {
+      chai.request('http://localhost:5001/api/v1')
+        .post('/questions')
+        .send(newData[1])
+        .end((err, res) => {
+          expect(res.statusCode).to.equal(200);
+          done();
+        });
+    });
+
+
+    it('user should not post if title field is blank', (done) => {
+      chai.request('http://localhost:5001/api/v1')
+        .post('/questions')
+        .send(testQuestions[1])
+        .end((err, res) => {
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.message).to.equal('No blanck fields');
+          done();
+        });
+    });
+
+
+    it('user should not post if body field is blank', (done) => {
+      chai.request('http://localhost:5001/api/v1')
+        .post('/questions')
+        .send(testQuestions[2])
+        .end((err, res) => {
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.message).to.equal('No blanck fields');
+          done();
+        });
+    });
+
+
+    it('user should not post if userid is not a number', (done) => {
+      chai.request('http://localhost:5001/api/v1')
+        .post('/questions')
+        .send(testQuestions[3])
+        .end((err, res) => {
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.message).to.equal('meetupid or userid must be integer');
+          done();
+        });
+    });
+
+
+    it('user should not post if meetupid is not a number', (done) => {
+      chai.request('http://localhost:5001/api/v1')
+        .post('/questions')
+        .send(testQuestions[4])
+        .end((err, res) => {
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.message).to.equal('meetupid or userid must be integer');
+          done();
+        });
+    });
+
+    it('user should not be able to post a question if it already exists', (done) => {
+      chai.request('http://localhost:5001/api/v1')
+        .post('/questions')
+        .send(testQuestions[0])
+        .end((err, res) => {
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.message).to.equal('question already exists');
+          done();
+        });
+    });
+  });
 });
