@@ -42,6 +42,18 @@ describe('Questioner', () => {
         });
     });
 
+    it('should get all upcoming meetup records', (done) => {
+      chai.request('http://localhost:5001/api/v1')
+        .get('/upcomingmeetups')
+        .end((err, res) => {
+          expect(res.statusCode).to.equal(200);
+          expect(res.body.status).to.equal(200);
+          if (err) return done(err);
+          done();
+        });
+    });
+
+
     it('should get a single meetup', (done) => {
       chai.request('http://localhost:5001/api/v1')
         .get('/meetups/1')

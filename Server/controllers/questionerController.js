@@ -110,6 +110,22 @@ class questioner {
 
   /**
     * @static
+    * @description Get all upcoming meetup records
+    * @param {object} req - Request object
+    * @param {object} res - Response object
+    * @returns {object} Json
+    * @memberof questionerController
+    */
+
+  static getUpcomingMeetUpRecords(req, res) {
+    return res.status(200).json({
+      status: 200,
+      data: getUpComingSpec(),
+    });
+  }
+
+  /**
+    * @static
     * @description creates a meetup record
     * @param {object} req - Request object
     * @param {object} res - Response object

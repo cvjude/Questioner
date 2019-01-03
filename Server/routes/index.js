@@ -10,6 +10,7 @@ router.get('/', Questioner.welcome);
 
 // meetup endpoints
 router.get('/meetups', Questioner.getAllMeetUpRecords);
+router.get('/upcomingmeetups', Questioner.getUpcomingMeetUpRecords);
 router.get('/meetups/:id', Validate.AnInteger, Questioner.getMeetUpRecord);
 router.post('/meetups', Validate.validateMeetUp, Questioner.createMeetUpRecord);
 
