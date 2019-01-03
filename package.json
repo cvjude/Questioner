@@ -1,0 +1,34 @@
+{
+  "name": "UI",
+  "version": "1.0.0",
+  "description": "",
+  "main": "Server/app.js",
+  "scripts": {
+    "test" : "mocha --compilers js:@babel/register Server/test",
+    "start": "nodemon --exec babel-node Server/app.js",
+    "build": "babel src --out-dir UI",
+    "serve": "node UI/app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.2.2",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.2.3",
+    "chai": "^4.2.0",
+    "chai-http": "^4.2.0",
+    "eslint": "^5.3.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.1",
+    "eslint-plugin-react": "^7.11.0",
+    "nodemon": "^1.18.9",
+    "should": "^13.2.3"
+  }
+}
