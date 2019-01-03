@@ -97,6 +97,25 @@ class validate {
       });
     }
   }
+
+  /**
+  * @static
+  * @description Validates an rsvp
+  * @param {Object} req - Request object
+  * @param {Object} res - Response object
+  * @param {Object} next - Next function call
+  * @memberof Controllers
+  */
+
+  static validateVote(req, res, next) {
+    const { vote } = req.body;
+    if (vote) { next(); } else {
+      return res.status(400).json({
+        status: 400,
+        message: 'No blanck fields',
+      });
+    }
+  }
 }
 
 export default validate;

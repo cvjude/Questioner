@@ -18,5 +18,6 @@ router.post('/rsvp/:id', Validate.AnInteger, Validate.validateRsvp, Questioner.u
 // question endpoints
 
 router.post('/questions', Validate.validateQuestion, Questioner.createQuestionRecord);
+router.patch('/questions/:id', Validate.AnInteger, Validate.validateVote, Questioner.voteAQuestion);
 
 export default router;
