@@ -30,6 +30,18 @@ describe('Questioner', () => {
 
 
   describe('/GET all the meetups', () => {
+    it('should get all meetup records', (done) => {
+      chai.request('http://localhost:5001/api/v1')
+        .get('/meetups')
+        .end((err, res) => {
+          expect(meetups.length).to.equal(res.body.data.length);
+          expect(res.statusCode).to.equal(200);
+          expect(res.body.status).to.equal(200);
+          if (err) return done(err);
+          done();
+        });
+    });
+
     it('should get a single meetup', (done) => {
       chai.request('http://localhost:5001/api/v1')
         .get('/meetups/1')

@@ -2,6 +2,49 @@ import meetups from '../data/meetups';
 import questions from '../data/questions';
 import Rsvp from '../data/Rsvp';
 
+/**
+* @funcion
+* @description gives a new objects according to the given specifications
+* @memberof questionerController
+*/
+const getMeetupSpec = () => {
+  const SpecArray = [];
+  // for (const member of meetups) {
+  meetups.forEach((member) => {
+    const {
+      id, title, location, happeningOn, tags,
+    } = member;
+    const obj = {
+      id, title, location, happeningOn, tags,
+    };
+    SpecArray.push(obj);
+  });
+  return SpecArray;
+};
+
+/**
+* @funcion
+* @description gives a new objects according to the given specifications
+* @memberof questionerController
+*/
+const getUpComingSpec = () => {
+  const SpecArray = [];
+  // for (const member of meetups) {
+  meetups.forEach((member) => {
+    if (member.happeningOn > new Date().toJSON()) {
+      const {
+        id, title, location, happeningOn, tags,
+      } = member;
+      const obj = {
+        id, title, location, happeningOn, tags,
+      };
+      SpecArray.push(obj);
+    }
+  });
+  return SpecArray;
+};
+
+
 class questioner {
   /**
     * @static
@@ -48,6 +91,31 @@ class questioner {
       message: 'meetup not found',
     });
   }
+
+  /**
+    * @static
+    * @description Get all meetup record
+    * @param {object} req - Request object
+    * @param {object} res - Response object
+    * @returns {object} Json
+    * @memberof questionerController
+    */
+
+  static getAllMeetUpRecords(req, res) {
+    return res.status(200).json({
+      status: 200,
+      data: getMeetupSpec(),
+    });
+  }
+
+  /**
+    * @static
+    * @description creates a meetup record
+    * @param {object} req - Request object
+    * @param {object} res - Response object
+    * @returns {object} Json
+    * @memberof questionerController
+    */
 
   static createMeetUpRecord(req, res) {
     const {

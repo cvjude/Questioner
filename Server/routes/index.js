@@ -9,6 +9,7 @@ const router = express();
 router.get('/', Questioner.welcome);
 
 // meetup endpoints
+router.get('/meetups', Questioner.getAllMeetUpRecords);
 router.get('/meetups/:id', Validate.AnInteger, Questioner.getMeetUpRecord);
 router.post('/meetups', Validate.validateMeetUp, Questioner.createMeetUpRecord);
 
