@@ -1,5 +1,49 @@
 import meetups from '../data/meetups';
 import questions from '../data/questions';
+import Rsvp from '../data/Rsvp';
+
+/**
+* @funcion
+* @description gives a new objects according to the given specifications
+* @memberof questionerController
+*/
+const getMeetupSpec = () => {
+  const SpecArray = [];
+  // for (const member of meetups) {
+  meetups.forEach((member) => {
+    const {
+      id, title, location, happeningOn, tags,
+    } = member;
+    const obj = {
+      id, title, location, happeningOn, tags,
+    };
+    SpecArray.push(obj);
+  });
+  return SpecArray;
+};
+
+/**
+* @funcion
+* @description gives a new objects according to the given specifications
+* @memberof questionerController
+*/
+const getUpComingSpec = () => {
+  const SpecArray = [];
+  // for (const member of meetups) {
+  meetups.forEach((member) => {
+    if (member.happeningOn > new Date().toJSON()) {
+      const {
+        id, title, location, happeningOn, tags,
+      } = member;
+      const obj = {
+        id, title, location, happeningOn, tags,
+      };
+      SpecArray.push(obj);
+    }
+  });
+  return SpecArray;
+};
+
 
 class questioner {
   /**
@@ -13,6 +57,39 @@ class questioner {
 
   static welcome(req, res) {
     return res.status(200).json({ message: 'welcome to Jude\'s Questioner' });
+  }
+
+  /**
+    * @static
+    * @description Get a specific meetup record
+    * @param {object} req - Request object
+    * @param {object} res - Response object
+    * @returns {object} Json
+    * @memberof questionerController
+    */
+
+  static getMeetUpRecord(req, res) {
+    const meetupRecord = meetups.find(meetup => parseInt(meetup.id, 10)
+        === Number(req.params.id));
+
+    const {
+      id, topic, location, happeingOn, tags,
+    } = meetupRecord;
+
+    const obj = {
+      id, topic, location, happeingOn, tags,
+    };
+
+    if (meetupRecord) {
+      return res.status(200).json({
+        status: 200,
+        data: obj,
+      });
+    }
+    return res.status(404).json({
+      status: 404,
+      message: 'meetup not found',
+    });
   }
 
   /**
