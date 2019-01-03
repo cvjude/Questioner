@@ -2,49 +2,6 @@ import meetups from '../data/meetups';
 import questions from '../data/questions';
 import Rsvp from '../data/Rsvp';
 
-/**
-* @funcion
-* @description gives a new objects according to the given specifications
-* @memberof questionerController
-*/
-const getMeetupSpec = () => {
-  const SpecArray = [];
-  // for (const member of meetups) {
-  meetups.forEach((member) => {
-    const {
-      id, title, location, happeningOn, tags,
-    } = member;
-    const obj = {
-      id, title, location, happeningOn, tags,
-    };
-    SpecArray.push(obj);
-  });
-  return SpecArray;
-};
-
-/**
-* @funcion
-* @description gives a new objects according to the given specifications
-* @memberof questionerController
-*/
-const getUpComingSpec = () => {
-  const SpecArray = [];
-  // for (const member of meetups) {
-  meetups.forEach((member) => {
-    if (member.happeningOn > new Date().toJSON()) {
-      const {
-        id, title, location, happeningOn, tags,
-      } = member;
-      const obj = {
-        id, title, location, happeningOn, tags,
-      };
-      SpecArray.push(obj);
-    }
-  });
-  return SpecArray;
-};
-
-
 class questioner {
   /**
     * @static
@@ -91,6 +48,7 @@ class questioner {
       message: 'meetup not found',
     });
   }
+  
 
   /**
     * @static
@@ -179,6 +137,48 @@ class questioner {
     return res.status(200).json({
       status: 200,
       data: obj,
+    });
+  }
+
+
+  /**
+    * @static
+    * @respond to a meetup rsvp
+    * @param {object} req - Request object
+    * @param {object} res - Response object
+    * @returns {object} Json
+    * @memberof questionerController
+    */
+
+  static updateRsvp(req, res) {
+    const meetupRecord = meetups.find(meetup => parseInt(meetup.id, 10) === Number(req.params.id));
+    const {
+      user, response,
+    } = req.body;
+
+    const rsvpobj = {
+      id: Rsvp.length + 1,
+      topic: meetupRecord.topic,
+      meetup: meetupRecord.id,
+      status: response,
+      user,
+    };
+
+    if (meetupRecord) {
+      const obj = {
+        meetup: meetupRecord.id,
+        topic: meetupRecord.topic,
+        status: response,
+      };
+      Rsvp.push(rsvpobj);
+      return res.status(200).json({
+        status: 200,
+        data: obj,
+      });
+    }
+    return res.status(404).json({
+      status: 404,
+      message: 'meetup not found',
     });
   }
 }

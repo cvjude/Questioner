@@ -218,4 +218,41 @@ describe('Questioner', () => {
         });
     });
   });
+
+  describe('/POST Rsvp', () => {
+    it('user should be able to post rsvp', (done) => {
+      chai.request('http://localhost:5001/api/v1')
+        .post('/rsvp/1')
+        .send(testRsvp[0])
+        .end((err, res) => {
+          expect(res.statusCode).to.equal(200);
+          done();
+        });
+    });
+
+    it('user should not post if response field is blank', (done) => {
+      chai.request('http://localhost:5001/api/v1')
+        .post('/rsvp/1')
+        .send(testRsvp[1])
+        .end((err, res) => {
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.message).to.equal('No blanck fields');
+          done();
+        });
+    });
+
+
+    it('user should not post if userid is not a number', (done) => {
+      chai.request('http://localhost:5001/api/v1')
+        .post('/rsvp/1')
+        .send(testRsvp[2])
+        .end((err, res) => {
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.message).to.equal('userid must be integer');
+          done();
+        });
+    });
+  });
 });
