@@ -8,6 +8,9 @@ const router = express();
 
 router.get('/', Questioner.welcome);
 
+// meetup endpoints
+router.post('/meetups', Validate.validateMeetUp, Questioner.createMeetUpRecord);
+
 // question endpoints
 
 router.post('/questions', Validate.validateQuestion, Questioner.createQuestionRecord);
