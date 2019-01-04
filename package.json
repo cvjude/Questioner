@@ -9,8 +9,8 @@
   "scripts": {
     "babel-node": "babel-node --presets=env",
     "test": "cross-env NODE_ENV=test nyc mocha Server/test --exit",
-    "start": "node --exec babel-node Server/app.js",
-    "build": "babel src -d dist",
+    "start": "nodemon --exec babel-node Server/app.js",
+    /*"build": "babel Server/app.js --out-file Server/babel/app.js",*/
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "keywords": [],
