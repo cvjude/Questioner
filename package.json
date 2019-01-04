@@ -5,12 +5,12 @@
   "engines":{
     "node": "10.14.2"
   },
-  "main": "index.js",
+  "main": "Server/routes/index.js",
   "scripts": {
     "babel-node": "babel-node --presets=env",
     "test": "cross-env NODE_ENV=test nyc mocha Server/test --exit",
     "start": "nodemon --exec babel-node Server/app.js",
-    /*"build": "babel Server/app.js --out-file Server/babel/app.js",*/
+    "build": "babel Server/app.js --out-file Server/babel/app.js",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "keywords": [],
