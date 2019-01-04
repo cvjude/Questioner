@@ -229,8 +229,8 @@ class questioner {
   static voteAQuestion(req, res) {
     const questionRecord = questions.find(question => parseInt(question.id, 10)
         === Number(req.params.id));
-    const { vote } = req.body;
     if (questionRecord) {
+      const { vote } = req.body;
       if (vote === 'true') { questionRecord.votes ++; } else if (vote === 'false') {
         questionRecord.votes --;
         if (questionRecord.votes < 0) {
@@ -273,6 +273,8 @@ class questioner {
 
   static updateRsvp(req, res) {
     const meetupRecord = meetups.find(meetup => parseInt(meetup.id, 10) === Number(req.params.id));
+
+    if (meetupRecord) {
     const {
       user, response,
     } = req.body;
@@ -285,7 +287,6 @@ class questioner {
       user,
     };
 
-    if (meetupRecord) {
       const obj = {
         meetup: meetupRecord.id,
         topic: meetupRecord.topic,
