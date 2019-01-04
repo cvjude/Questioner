@@ -72,20 +72,22 @@ class questioner {
     const meetupRecord = meetups.find(meetup => parseInt(meetup.id, 10)
         === Number(req.params.id));
 
-    const {
-      id, topic, location, happeingOn, tags,
-    } = meetupRecord;
-
-    const obj = {
-      id, topic, location, happeingOn, tags,
-    };
 
     if (meetupRecord) {
+      const {
+        id, topic, location, happeingOn, tags,
+      } = meetupRecord;
+
+      const obj = {
+        id, topic, location, happeingOn, tags,
+      };
+
       return res.status(200).json({
         status: 200,
         data: obj,
       });
     }
+
     return res.status(404).json({
       status: 404,
       message: 'meetup not found',
@@ -202,7 +204,7 @@ class questioner {
       meetup,
       body,
       createdBy,
-      createdOn: new Date(),
+      createdOn: new Date().toJSON(),
       user,
       votes: 0,
     };
@@ -229,8 +231,8 @@ class questioner {
         === Number(req.params.id));
     const { vote } = req.body;
     if (questionRecord) {
-      if (vote === 'true') { questionRecord.votes += 1; } else if (vote === 'false') {
-        questionRecord.votes -= 1;
+      if (vote === 'true') { questionRecord.votes ++; } else if (vote === 'false') {
+        questionRecord.votes --;
         if (questionRecord.votes < 0) {
           questionRecord.votes = 0;
         }
