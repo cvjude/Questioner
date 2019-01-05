@@ -5,7 +5,7 @@
   "engines":{
     "node": "10.14.2"
   },
-  "main": "Server/routes/index.js",
+  "main": "Server/routesindex.js",
   "scripts": {
     "babel-node": "babel-node --presets=env",
     "test": "cross-env NODE_ENV=test nyc mocha Server/test --exit",
