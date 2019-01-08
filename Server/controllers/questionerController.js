@@ -1,51 +1,9 @@
 import meetups from '../data/meetups';
 import questions from '../data/questions';
 import Rsvp from '../data/Rsvp';
+import GetDataSpec from '../helper/getDataSpec';
 
-/**
-* @funcion
-* @description gives a new objects according to the given specifications
-* @memberof questionerController
-*/
-const getMeetupSpec = () => {
-  const SpecArray = [];
-  // for (const member of meetups) {
-  meetups.forEach((member) => {
-    const {
-      id, title, location, happeningOn, tags,
-    } = member;
-    const obj = {
-      id, title, location, happeningOn, tags,
-    };
-    SpecArray.push(obj);
-  });
-  return SpecArray;
-};
-
-/**
-* @funcion
-* @description gives a new objects according to the given specifications
-* @memberof questionerController
-*/
-const getUpComingSpec = () => {
-  const SpecArray = [];
-  // for (const member of meetups) {
-  meetups.forEach((member) => {
-    if (member.happeningOn > new Date().toJSON()) {
-      const {
-        id, title, location, happeningOn, tags,
-      } = member;
-      const obj = {
-        id, title, location, happeningOn, tags,
-      };
-      SpecArray.push(obj);
-    }
-  });
-  return SpecArray;
-};
-
-
-class questioner {
+class Questioner {
   /**
     * @static
     * @description Display a welcome message
@@ -90,7 +48,7 @@ class questioner {
 
     return res.status(404).json({
       status: 404,
-      message: 'meetup not found',
+      error: 'meetup not found',
     });
   }
 
@@ -106,7 +64,7 @@ class questioner {
   static getAllMeetUpRecords(req, res) {
     return res.status(200).json({
       status: 200,
-      data: getMeetupSpec(),
+      data: GetDataSpec.getMeetupSpec(),
     });
   }
 
@@ -119,10 +77,10 @@ class questioner {
     * @memberof questionerController
     */
 
-  static getUpcomingMeetUpRecords(req, res) {
+  static getUpComingMeetUpRecords(req, res) {
     return res.status(200).json({
       status: 200,
-      data: getUpComingSpec(),
+      data: GetDataSpec.getUpComingSpec(),
     });
   }
 
@@ -142,9 +100,9 @@ class questioner {
 
     for (const member of meetups) {
       if (member.topic === topic && member.happeningOn === happeningOn) {
-        return res.status(400).json({
-          status: 400,
-          message: 'meetup already exists',
+        return res.status(403).json({
+          status: 403,
+          error: 'meetup already exists',
         });
       }
     }
@@ -165,8 +123,8 @@ class questioner {
     };
 
     meetups.push(meetupRecord);
-    return res.status(200).json({
-      status: 200,
+    return res.status(201).json({
+      status: 201,
       data: obj,
     });
   }
@@ -187,9 +145,9 @@ class questioner {
 
     for (const member of questions) {
       if (member.title === title && member.body === body) {
-        return res.status(400).json({
-          status: 400,
-          message: 'question already exists',
+        return res.status(403).json({
+          status: 403,
+          error: 'question already exists',
         });
       }
     }
@@ -210,8 +168,8 @@ class questioner {
     };
 
     questions.push(questionRecord);
-    return res.status(200).json({
-      status: 200,
+    return res.status(201).json({
+      status: 201,
       data: obj,
     });
   }
@@ -219,7 +177,7 @@ class questioner {
 
   /**
     * @static
-    * @upvote or down vote a question
+    * @description upvote or down vote a question
     * @param {object} req - Request object
     * @param {object} res - Response object
     * @returns {object} Json
@@ -231,15 +189,15 @@ class questioner {
         === Number(req.params.id));
     if (questionRecord) {
       const { vote } = req.body;
-      if (vote === 'true') { questionRecord.votes ++; } else if (vote === 'false') {
-        questionRecord.votes --;
+      if (vote === 'true') { questionRecord.votes++; } else if (vote === 'false') {
+        questionRecord.votes--;
         if (questionRecord.votes < 0) {
           questionRecord.votes = 0;
         }
       } else {
-        return res.status(400).json({
-          status: 400,
-          message: 'must be true or false',
+        return res.status(406).json({
+          status: 406,
+          error: 'must be true or false',
         });
       }
       const {
@@ -250,42 +208,42 @@ class questioner {
         meetup, title, body, votes,
       };
 
-      return res.status(200).json({
-        status: 200,
+      return res.status(202).json({
+        status: 202,
         data: obj,
       });
     }
     return res.status(404).json({
       status: 404,
-      message: 'question not found',
+      error: 'question not found',
     });
   }
 
 
   /**
     * @static
-    * @respond to a meetup rsvp
+    * @description respond to a meetup rsvp
     * @param {object} req - Request object
     * @param {object} res - Response object
     * @returns {object} Json
     * @memberof questionerController
     */
 
-  static updateRsvp(req, res) {
+  static upDateRsvp(req, res) {
     const meetupRecord = meetups.find(meetup => parseInt(meetup.id, 10) === Number(req.params.id));
 
     if (meetupRecord) {
-    const {
-      user, response,
-    } = req.body;
+      const {
+        user, response,
+      } = req.body;
 
-    const rsvpobj = {
-      id: Rsvp.length + 1,
-      topic: meetupRecord.topic,
-      meetup: meetupRecord.id,
-      status: response,
-      user,
-    };
+      const rsvpobj = {
+        id: Rsvp.length + 1,
+        topic: meetupRecord.topic,
+        meetup: meetupRecord.id,
+        status: response,
+        user,
+      };
 
       const obj = {
         meetup: meetupRecord.id,
@@ -300,9 +258,9 @@ class questioner {
     }
     return res.status(404).json({
       status: 404,
-      message: 'meetup not found',
+      error: 'meetup not found',
     });
   }
 }
 
-export default questioner;
+export default Questioner;
