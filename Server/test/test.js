@@ -22,7 +22,6 @@ describe('Questioner', () => {
         .end((err, res) => {
           expect(res.body.message).to.equal('welcome to Jude\'s Questioner');
           expect(res.statusCode).to.equal(200);
-          if (err) return done(err);
           done();
         });
     });
@@ -37,7 +36,6 @@ describe('Questioner', () => {
           expect(meetups.length).to.equal(res.body.data.length);
           expect(res.statusCode).to.equal(200);
           expect(res.body.status).to.equal(200);
-          if (err) return done(err);
           done();
         });
     });
@@ -48,7 +46,6 @@ describe('Questioner', () => {
         .end((err, res) => {
           expect(res.statusCode).to.equal(200);
           expect(res.body.status).to.equal(200);
-          if (err) return done(err);
           done();
         });
     });
@@ -61,7 +58,6 @@ describe('Questioner', () => {
           expect(res.statusCode).to.equal(200);
           expect('1').to.equal(res.body.data.id);
           expect(res.body.status).to.equal(200);
-          if (err) return done(err);
           done();
         });
     });
@@ -73,7 +69,6 @@ describe('Questioner', () => {
           expect(res.body.error).to.equal('meetup not found');
           expect(res.statusCode).to.equal(404);
           expect(res.body.status).to.equal(404);
-          if (err) return done(err);
           done();
         });
     });
@@ -86,7 +81,6 @@ describe('Questioner', () => {
           expect(res.body.error).to.equal('Id must be an integer');
           expect(res.statusCode).to.equal(403);
           expect(res.body.status).to.equal(403);
-          if (err) return done(err);
           done();
         });
     });
