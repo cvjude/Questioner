@@ -70,7 +70,7 @@ describe('Questioner', () => {
       chai.request('http://localhost:5001/api/v1')
         .get('/meetups/12')
         .end((err, res) => {
-          expect(res.body.message).to.equal('meetup not found');
+          expect(res.body.error).to.equal('meetup not found');
           expect(res.statusCode).to.equal(404);
           expect(res.body.status).to.equal(404);
           if (err) return done(err);
@@ -83,9 +83,9 @@ describe('Questioner', () => {
       chai.request('http://localhost:5001/api/v1')
         .get('/meetups/d')
         .end((err, res) => {
-          expect(res.body.message).to.equal('Id must be an integer');
-          expect(res.statusCode).to.equal(400);
-          expect(res.body.status).to.equal(400);
+          expect(res.body.error).to.equal('Id must be an integer');
+          expect(res.statusCode).to.equal(403);
+          expect(res.body.status).to.equal(403);
           if (err) return done(err);
           done();
         });
@@ -99,7 +99,7 @@ describe('Questioner', () => {
         .post('/meetups')
         .send(newData[0])
         .end((err, res) => {
-          expect(res.statusCode).to.equal(200);
+          expect(res.statusCode).to.equal(201);
           done();
         });
     });
@@ -112,7 +112,7 @@ describe('Questioner', () => {
         .end((err, res) => {
           expect(res.statusCode).to.equal(400);
           expect(res.body.status).to.equal(400);
-          expect(res.body.message).to.equal('No blanck fields');
+          expect(res.body.error).to.equal('No blank fields');
           done();
         });
     });
@@ -124,7 +124,7 @@ describe('Questioner', () => {
         .end((err, res) => {
           expect(res.statusCode).to.equal(400);
           expect(res.body.status).to.equal(400);
-          expect(res.body.message).to.equal('No blanck fields');
+          expect(res.body.error).to.equal('No blank fields');
           done();
         });
     });
@@ -136,7 +136,7 @@ describe('Questioner', () => {
         .end((err, res) => {
           expect(res.statusCode).to.equal(400);
           expect(res.body.status).to.equal(400);
-          expect(res.body.message).to.equal('No blanck fields');
+          expect(res.body.error).to.equal('No blank fields');
           done();
         });
     });
@@ -148,7 +148,7 @@ describe('Questioner', () => {
         .end((err, res) => {
           expect(res.statusCode).to.equal(400);
           expect(res.body.status).to.equal(400);
-          expect(res.body.message).to.equal('No blanck fields');
+          expect(res.body.error).to.equal('No blank fields');
           done();
         });
     });
@@ -158,9 +158,9 @@ describe('Questioner', () => {
         .post('/meetups')
         .send(testMeetups[5])
         .end((err, res) => {
-          expect(res.statusCode).to.equal(400);
-          expect(res.body.status).to.equal(400);
-          expect(res.body.message).to.equal('meetup already exists');
+          expect(res.statusCode).to.equal(403);
+          expect(res.body.status).to.equal(403);
+          expect(res.body.error).to.equal('meetup already exists');
           done();
         });
     });
@@ -173,7 +173,7 @@ describe('Questioner', () => {
         .post('/questions')
         .send(newData[1])
         .end((err, res) => {
-          expect(res.statusCode).to.equal(200);
+          expect(res.statusCode).to.equal(201);
           done();
         });
     });
@@ -186,7 +186,7 @@ describe('Questioner', () => {
         .end((err, res) => {
           expect(res.statusCode).to.equal(400);
           expect(res.body.status).to.equal(400);
-          expect(res.body.message).to.equal('No blanck fields');
+          expect(res.body.error).to.equal('No blank fields');
           done();
         });
     });
@@ -199,7 +199,7 @@ describe('Questioner', () => {
         .end((err, res) => {
           expect(res.statusCode).to.equal(400);
           expect(res.body.status).to.equal(400);
-          expect(res.body.message).to.equal('No blanck fields');
+          expect(res.body.error).to.equal('No blank fields');
           done();
         });
     });
@@ -210,9 +210,9 @@ describe('Questioner', () => {
         .post('/questions')
         .send(testQuestions[3])
         .end((err, res) => {
-          expect(res.statusCode).to.equal(400);
-          expect(res.body.status).to.equal(400);
-          expect(res.body.message).to.equal('meetupid or userid must be integer');
+          expect(res.statusCode).to.equal(403);
+          expect(res.body.status).to.equal(403);
+          expect(res.body.error).to.equal('meetupid or userid must be integer');
           done();
         });
     });
@@ -223,9 +223,9 @@ describe('Questioner', () => {
         .post('/questions')
         .send(testQuestions[4])
         .end((err, res) => {
-          expect(res.statusCode).to.equal(400);
-          expect(res.body.status).to.equal(400);
-          expect(res.body.message).to.equal('meetupid or userid must be integer');
+          expect(res.statusCode).to.equal(403);
+          expect(res.body.status).to.equal(403);
+          expect(res.body.error).to.equal('meetupid or userid must be integer');
           done();
         });
     });
@@ -235,9 +235,9 @@ describe('Questioner', () => {
         .post('/questions')
         .send(testQuestions[0])
         .end((err, res) => {
-          expect(res.statusCode).to.equal(400);
-          expect(res.body.status).to.equal(400);
-          expect(res.body.message).to.equal('question already exists');
+          expect(res.statusCode).to.equal(403);
+          expect(res.body.status).to.equal(403);
+          expect(res.body.error).to.equal('question already exists');
           done();
         });
     });
@@ -261,7 +261,7 @@ describe('Questioner', () => {
         .end((err, res) => {
           expect(res.statusCode).to.equal(400);
           expect(res.body.status).to.equal(400);
-          expect(res.body.message).to.equal('No blanck fields');
+          expect(res.body.error).to.equal('No blank fields');
           done();
         });
     });
@@ -272,9 +272,9 @@ describe('Questioner', () => {
         .post('/rsvp/1')
         .send(testRsvp[2])
         .end((err, res) => {
-          expect(res.statusCode).to.equal(400);
-          expect(res.body.status).to.equal(400);
-          expect(res.body.message).to.equal('userid must be integer');
+          expect(res.statusCode).to.equal(403);
+          expect(res.body.status).to.equal(403);
+          expect(res.body.error).to.equal('userid must be integer');
           done();
         });
     });
@@ -286,7 +286,7 @@ describe('Questioner', () => {
         .patch('/questions/1')
         .send({ vote: 'true' })
         .end((err, res) => {
-          expect(res.statusCode).to.equal(200);
+          expect(res.statusCode).to.equal(202);
           done();
         });
     });
@@ -298,7 +298,7 @@ describe('Questioner', () => {
         .end((err, res) => {
           expect(res.statusCode).to.equal(400);
           expect(res.body.status).to.equal(400);
-          expect(res.body.message).to.equal('No blanck fields');
+          expect(res.body.error).to.equal('No blank fields');
           done();
         });
     });
@@ -310,8 +310,8 @@ describe('Questioner', () => {
         .patch('/questions/1')
         .send({ vote: 'true' })
         .end((err, res) => {
-          expect(res.statusCode).to.equal(200);
-          expect(res.body.status).to.equal(200);
+          expect(res.statusCode).to.equal(202);
+          expect(res.body.status).to.equal(202);
           expect(res.body.data.votes).to.equal(votes + 1);
           done();
         });
@@ -323,8 +323,8 @@ describe('Questioner', () => {
         .patch('/questions/1')
         .send({ vote: 'false' })
         .end((err, res) => {
-          expect(res.statusCode).to.equal(200);
-          expect(res.body.status).to.equal(200);
+          expect(res.statusCode).to.equal(202);
+          expect(res.body.status).to.equal(202);
           expect(res.body.data.votes).to.equal(votes - 1);
           done();
         });
