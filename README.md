@@ -44,14 +44,8 @@ go here https://www.getpostman.com/
 ```
 downoad for your platform and install
 
-## RUNING THE APP
-To start the app use the command, to get all the dependencies and devdependies
-```
-npm install
-```
-
 ## Running the tests
-Run the test using the command
+also run test writen in mocha by running the command
 ```
 npm run test
 ```
@@ -64,9 +58,9 @@ npx eslint code.js
 ```
 
 ## Deployment
-This app is deployed on Heroku
+deploy this on Heroku
 ```
-https://dashboard.heroku.com/apps/still-springs-10423
+heroku.com
 ```
 
 ## Built With
@@ -74,9 +68,12 @@ Node
 Sublime
 Chrome
 
-## Author
+## Authors
 ```
 Jude Chinoso
+```
+```
+Taiwo.
 ```
 
 ## License
