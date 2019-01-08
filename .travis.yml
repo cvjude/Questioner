@@ -2,7 +2,6 @@ language: node_js
 node_js:
   - "6.1.0"
 
-
 env:
   global:
     - CC_TEST_REPORTER_ID=d48769aaf8fb30dd1da8d72885ce531fe994df3003e2e8ca5b1e1337c4f02ef3
