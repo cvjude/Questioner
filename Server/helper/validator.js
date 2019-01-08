@@ -1,3 +1,10 @@
+import Joi from 'joi';
+import meetupSchema from './schemaData/meetupSchema';
+import questionSchema from './schemaData/questionSchema';
+import rsvpSchema from './schemaData/rsvpSchema';
+import voteSchema from './schemaData/voteSchema';
+import Util from './Utilities'
+
 class Validate {
   /**
   * @static
@@ -31,16 +38,32 @@ class Validate {
 
   static validateMeetUp(req, res, next) {
     const {
-      topic, location, tags, happeningOn,
+      title, location, tags, happeningOn,
     } = req.body;
-    if (topic && location && tags && happeningOn) {
-      next();
-    } else {
-      return res.status(400).json({
-        status: 400,
-        error: 'No blank fields',
-      });
-    }
+
+    const validateObject = {title, location, happeningOn, tags, }
+
+    Joi.validate(validateObject, meetupSchema, (err, value) =>{
+      if(err){
+        return res.status(422).json({
+          status: 422,
+          error: err.details[0].message
+        })
+      }
+      else if(Util.stringIsNumber(title)){
+        res.status(422).json({
+          status: 422,
+          error: 'title should not be a number'
+        })
+      }
+      else if(Util.stringIsNumber(location)){
+        res.status(422).json({
+          status: 422,
+          error: 'location should not be a number'
+        });
+      }else
+        next();
+    });
   }
 
   /**
@@ -56,19 +79,30 @@ class Validate {
     const {
       title, body, user, meetup,
     } = req.body;
-    if (title && body && user && meetup) {
-      if (Number.isInteger(Number(meetup)) && Number.isInteger(Number(user))) { next(); } else {
-        return res.status(403).json({
-          status: 403,
-          error: 'meetupid or userid must be integer',
-        });
+
+    const validateObject = {title, body, user, meetup, }
+
+    Joi.validate(validateObject, questionSchema, (err, value) =>{
+      if(err){
+        return res.status(422).json({
+          status: 422,
+          error: err.details[0].message
+        })
       }
-    } else {
-      return res.status(400).json({
-        status: 400,
-        error: 'No blank fields',
-      });
-    }
+      else if(Util.stringIsNumber(title)){
+        res.status(422).json({
+          status: 422,
+          error: 'title should not be a number'
+        })
+      }
+      else if(Util.stringIsNumber(body)){
+        res.status(422).json({
+          status: 422,
+          error: 'body should not be a number'
+        });
+      }else
+        next();
+    });
   }
 
 
@@ -83,19 +117,24 @@ class Validate {
 
   static validateRsvp(req, res, next) {
     const { response, user } = req.body;
-    if (response && user) {
-      if (Number.isInteger(Number(user))) { next(); } else {
-        return res.status(403).json({
-          status: 403,
-          error: 'userid must be integer',
-        });
+
+    const validateObject = {response, user, }
+
+    Joi.validate(validateObject, rsvpSchema, (err, value) =>{
+      if(err){
+        return res.status(422).json({
+          status: 422,
+          error: err.details[0].message
+        })
       }
-    } else {
-      return res.status(400).json({
-        status: 400,
-        error: 'No blank fields',
-      });
-    }
+      else if(Util.stringIsNumber(response)){
+        res.status(422).json({
+          status: 422,
+          error: 'response should not be a number'
+        });
+      }else
+        next();
+    });
   }
 
   /**
@@ -109,12 +148,23 @@ class Validate {
 
   static validateVote(req, res, next) {
     const { vote } = req.body;
-    if (vote) { next(); } else {
-      return res.status(400).json({
-        status: 400,
-        error: 'No blank fields',
-      });
-    }
+    const validateObject = {vote, }
+
+    Joi.validate(validateObject, voteSchema, (err, value) =>{
+      if(err){
+        return res.status(422).json({
+          status: 422,
+          error: err.details[0].message
+        })
+      }
+      else if(Util.stringIsNumber(vote)){
+        res.status(422).json({
+          status: 422,
+          error: 'response should not be a number'
+        });
+      }else
+        next();
+    });
   }
 }
 

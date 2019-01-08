@@ -8,7 +8,6 @@ class GetDataSpec {
   */
   static getMeetupSpec() {
     const SpecArray = [];
-    // for (const member of meetups) {
     meetups.forEach((member) => {
       const {
         id, title, location, happeningOn, tags,
@@ -28,7 +27,6 @@ class GetDataSpec {
   */
   static getUpComingSpec() {
     const SpecArray = [];
-    // for (const member of meetups) {
     meetups.forEach((member) => {
       if (member.happeningOn > new Date().toJSON()) {
         const {

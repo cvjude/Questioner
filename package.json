@@ -26,7 +26,9 @@
     "chai-as-promised": "^7.1.1",
     "chai-http": "^4.2.1",
     "dotenv": "^6.2.0",
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "joi": "^14.3.1",
+    "joi-json": "^2.1.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

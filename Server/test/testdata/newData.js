@@ -1,9 +1,9 @@
 const newData = [
 	{
 		"location" : "london",
-		"topic" : "this is" ,
-		"happeningOn" : "Jan 1 2018", // when the meetup is holding
-		"tags" : "[violet, amos]" 
+		"title" : "this is" ,
+		"happeningOn" : "2019-07-02T10:05:16.792Z", // when the meetup is holding
+		"tags" : ["violet", "amos"] 
 	},
 	{
 		"meetup" : "1", // represents the meetup the question is for
