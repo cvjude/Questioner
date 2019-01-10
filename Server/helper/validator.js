@@ -1,3 +1,9 @@
+import Joi from 'joi';
+import meetupSchema from './schemaData/meetupSchema';
+import questionSchema from './schemaData/questionSchema';
+import rsvpSchema from './schemaData/rsvpSchema';
+import Util from './Utilities';
+
 class Validate {
   /**
   * @static
@@ -12,8 +18,8 @@ class Validate {
     if (Number.isInteger(Number(req.params.id))) {
       next();
     } else {
-      return res.status(403).json({
-        status: 403,
+      return res.status(400).json({
+        status: 400,
         error: 'Id must be an integer',
       });
     }
@@ -31,16 +37,32 @@ class Validate {
 
   static validateMeetUp(req, res, next) {
     const {
-      topic, location, tags, happeningOn,
+      title, location, tags, happeningOn,
     } = req.body;
-    if (topic && location && tags && happeningOn) {
-      next();
-    } else {
-      return res.status(400).json({
-        status: 400,
-        error: 'No blank fields',
-      });
-    }
+
+    const validateObject = {
+      title, location, happeningOn, tags,
+    };
+
+    Joi.validate(validateObject, meetupSchema, (err) => {
+      if (err) {
+        return res.status(400).json({
+          status: 400,
+          error: err.details[0].message,
+        });
+      }
+      if (Util.stringIsNumber(title)) {
+        res.status(400).json({
+          status: 400,
+          error: 'title should not be a number',
+        });
+      } else if (Util.stringIsNumber(location)) {
+        res.status(400).json({
+          status: 400,
+          error: 'location should not be a number',
+        });
+      } else next();
+    });
   }
 
   /**
@@ -56,19 +78,30 @@ class Validate {
     const {
       title, body, user, meetup,
     } = req.body;
-    if (title && body && user && meetup) {
-      if (Number.isInteger(Number(meetup)) && Number.isInteger(Number(user))) { next(); } else {
-        return res.status(403).json({
-          status: 403,
-          error: 'meetupid or userid must be integer',
+
+    const validateObject = {
+      title, body, user, meetup,
+    };
+
+    Joi.validate(validateObject, questionSchema, (err) => {
+      if (err) {
+        return res.status(400).json({
+          status: 400,
+          error: err.details[0].message,
         });
       }
-    } else {
-      return res.status(400).json({
-        status: 400,
-        error: 'No blank fields',
-      });
-    }
+      if (Util.stringIsNumber(title)) {
+        res.status(400).json({
+          status: 400,
+          error: 'title should not be a number',
+        });
+      } else if (Util.stringIsNumber(body)) {
+        res.status(400).json({
+          status: 400,
+          error: 'body should not be a number',
+        });
+      } else next();
+    });
   }
 
 
@@ -83,38 +116,23 @@ class Validate {
 
   static validateRsvp(req, res, next) {
     const { response, user } = req.body;
-    if (response && user) {
-      if (Number.isInteger(Number(user))) { next(); } else {
-        return res.status(403).json({
-          status: 403,
-          error: 'userid must be integer',
+
+    const validateObject = { response, user };
+
+    Joi.validate(validateObject, rsvpSchema, (err) => {
+      if (err) {
+        return res.status(400).json({
+          status: 400,
+          error: err.details[0].message,
         });
       }
-    } else {
-      return res.status(400).json({
-        status: 400,
-        error: 'No blank fields',
-      });
-    }
-  }
-
-  /**
-  * @static
-  * @description Validates an rsvp
-  * @param {Object} req - Request object
-  * @param {Object} res - Response object
-  * @param {Object} next - Next function call
-  * @memberof Controllers
-  */
-
-  static validateVote(req, res, next) {
-    const { vote } = req.body;
-    if (vote) { next(); } else {
-      return res.status(400).json({
-        status: 400,
-        error: 'No blank fields',
-      });
-    }
+      if (Util.stringIsNumber(response)) {
+        res.status(400).json({
+          status: 400,
+          error: 'response should not be a number',
+        });
+      } else next();
+    });
   }
 }
 
