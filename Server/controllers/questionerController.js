@@ -1,51 +1,9 @@
 import meetups from '../data/meetups';
 import questions from '../data/questions';
 import Rsvp from '../data/Rsvp';
+import GetDataSpec from '../helper/getDataSpec';
 
-/**
-* @funcion
-* @description gives a new objects according to the given specifications
-* @memberof questionerController
-*/
-const getMeetupSpec = () => {
-  const SpecArray = [];
-  // for (const member of meetups) {
-  meetups.forEach((member) => {
-    const {
-      id, title, location, happeningOn, tags,
-    } = member;
-    const obj = {
-      id, title, location, happeningOn, tags,
-    };
-    SpecArray.push(obj);
-  });
-  return SpecArray;
-};
-
-/**
-* @funcion
-* @description gives a new objects according to the given specifications
-* @memberof questionerController
-*/
-const getUpComingSpec = () => {
-  const SpecArray = [];
-  // for (const member of meetups) {
-  meetups.forEach((member) => {
-    if (member.happeningOn > new Date().toJSON()) {
-      const {
-        id, title, location, happeningOn, tags,
-      } = member;
-      const obj = {
-        id, title, location, happeningOn, tags,
-      };
-      SpecArray.push(obj);
-    }
-  });
-  return SpecArray;
-};
-
-
-class questioner {
+class Questioner {
   /**
     * @static
     * @description Display a welcome message
@@ -75,11 +33,11 @@ class questioner {
 
     if (meetupRecord) {
       const {
-        id, topic, location, happeingOn, tags,
+        id, title, location, happeingOn, tags,
       } = meetupRecord;
 
       const obj = {
-        id, topic, location, happeingOn, tags,
+        id, title, location, happeingOn, tags,
       };
 
       return res.status(200).json({
@@ -90,7 +48,7 @@ class questioner {
 
     return res.status(404).json({
       status: 404,
-      message: 'meetup not found',
+      error: 'meetup not found',
     });
   }
 
@@ -106,7 +64,7 @@ class questioner {
   static getAllMeetUpRecords(req, res) {
     return res.status(200).json({
       status: 200,
-      data: getMeetupSpec(),
+      data: GetDataSpec.getMeetupSpec(),
     });
   }
 
@@ -119,10 +77,10 @@ class questioner {
     * @memberof questionerController
     */
 
-  static getUpcomingMeetUpRecords(req, res) {
+  static getUpComingMeetUpRecords(req, res) {
     return res.status(200).json({
       status: 200,
-      data: getUpComingSpec(),
+      data: GetDataSpec.getUpComingSpec(),
     });
   }
 
@@ -137,14 +95,14 @@ class questioner {
 
   static createMeetUpRecord(req, res) {
     const {
-      topic, location, happeningOn, images, tags,
+      title, location, happeningOn, images, tags,
     } = req.body;
 
     for (const member of meetups) {
-      if (member.topic === topic && member.happeningOn === happeningOn) {
+      if (member.title === title && member.happeningOn === happeningOn) {
         return res.status(400).json({
           status: 400,
-          message: 'meetup already exists',
+          error: 'meetup already exists',
         });
       }
     }
@@ -152,7 +110,7 @@ class questioner {
 
     const meetupRecord = {
       id: meetups.length + 1,
-      topic,
+      title,
       location,
       happeningOn,
       images,
@@ -161,12 +119,12 @@ class questioner {
     };
 
     const obj = {
-      topic, location, happeningOn, tags,
+      title, location, happeningOn, tags,
     };
 
     meetups.push(meetupRecord);
-    return res.status(200).json({
-      status: 200,
+    return res.status(201).json({
+      status: 201,
       data: obj,
     });
   }
@@ -189,14 +147,10 @@ class questioner {
       if (member.title === title && member.body === body) {
         return res.status(400).json({
           status: 400,
-          message: 'question already exists',
+          error: 'question already exists',
         });
       }
     }
-
-    const obj = {
-      user, meetup, title, body,
-    };
 
     const questionRecord = {
       id: questions.length + 1,
@@ -209,9 +163,13 @@ class questioner {
       votes: 0,
     };
 
+    const obj = {
+      id: questionRecord.id, user, meetup, title, body,
+    };
+
     questions.push(questionRecord);
-    return res.status(200).json({
-      status: 200,
+    return res.status(201).json({
+      status: 201,
       data: obj,
     });
   }
@@ -219,7 +177,7 @@ class questioner {
 
   /**
     * @static
-    * @upvote or down vote a question
+    * @description upvote vote a question
     * @param {object} req - Request object
     * @param {object} res - Response object
     * @returns {object} Json
@@ -229,19 +187,15 @@ class questioner {
   static voteAQuestion(req, res) {
     const questionRecord = questions.find(question => parseInt(question.id, 10)
         === Number(req.params.id));
+
     if (questionRecord) {
-      const { vote } = req.body;
-      if (vote === 'true') { questionRecord.votes ++; } else if (vote === 'false') {
-        questionRecord.votes --;
+      if (req.url.endsWith('upvote')) { questionRecord.votes += 1; } else {
+        questionRecord.votes -= 1;
         if (questionRecord.votes < 0) {
           questionRecord.votes = 0;
         }
-      } else {
-        return res.status(400).json({
-          status: 400,
-          message: 'must be true or false',
-        });
       }
+
       const {
         meetup, title, body, votes,
       } = questionRecord;
@@ -257,35 +211,35 @@ class questioner {
     }
     return res.status(404).json({
       status: 404,
-      message: 'question not found',
+      error: 'question not found',
     });
   }
 
 
   /**
     * @static
-    * @respond to a meetup rsvp
+    * @description respond to a meetup rsvp
     * @param {object} req - Request object
     * @param {object} res - Response object
     * @returns {object} Json
     * @memberof questionerController
     */
 
-  static updateRsvp(req, res) {
+  static upDateRsvp(req, res) {
     const meetupRecord = meetups.find(meetup => parseInt(meetup.id, 10) === Number(req.params.id));
 
     if (meetupRecord) {
-    const {
-      user, response,
-    } = req.body;
+      const {
+        user, response,
+      } = req.body;
 
-    const rsvpobj = {
-      id: Rsvp.length + 1,
-      topic: meetupRecord.topic,
-      meetup: meetupRecord.id,
-      status: response,
-      user,
-    };
+      const rsvpobj = {
+        id: Rsvp.length + 1,
+        topic: meetupRecord.title,
+        meetup: meetupRecord.id,
+        status: response,
+        user,
+      };
 
       const obj = {
         meetup: meetupRecord.id,
@@ -300,9 +254,9 @@ class questioner {
     }
     return res.status(404).json({
       status: 404,
-      message: 'meetup not found',
+      error: 'meetup not found',
     });
   }
 }
 
-export default questioner;
+export default Questioner;
