@@ -9,35 +9,54 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" type="text/css" href="CSS/style-1.css">
 </head>
-<body>
-<div></div>
-<nav id = "stayFixed">
-	<span id = "floatLeft"> Jude's Questioner</span>
-	<span class = "floatRight"><a href="index.html">log out</a></span>
-	<span class = "floatRight"><a href="main.html">Home</a></span>
+<body id = "body">
+<nav id = "nav">
+	<div class = "container">
+		<ul>
+			<li>QUESTIONER</a></li>
+			<li class = "floatleft"><a href = "index.html">Log out</a>
+			</li>
+			<li class = "floatleft"><a href = "user-profile.html">Profile</a>
+			<li class = "floatleft"><a href = "main.html">Home</a>
+			</li>
+		</ul>
+	</div>
 </nav>
-<header>
-	<div class = "push"></div>
-</header>
 <main>
-	<section>
-		<h3 class = "content top">Commments on Judes Question</h3>
-		<div class = "content">
-			<ul>
-				<li> This is a comment </li>
-				<li> This is another comment </li> 
-			</ul>
-			<span><button class = "press">Add Comments</button></span>
-			<form class = "content">
-			<input placeholder = "Add comment" type = "text" name = "Comment" id = "Comment"><br>
-			<button class = "press">Post Comment</button>
-		</form>
+	<div class = "container">
+		<section>
+		<div class = "plain">
+			<div>
+				<small>Cvjude asked</small>
+				<h5>Why are people happy what has happened to them</h5>
+			</div>
 		</div>
 	</section>
+	</div>
+
+	<div class = "single-post question">
+		<div class = "post-content">
+				<p><small>Cvjude replied</small></p>
+				<p>Thats a difficult question</p>
+		</div>
+	</div>
+
+	<div class = "single-post question">
+		<div class = "post-content">
+				<p><small>jsmith replied</small></p>
+				<p>Well I cant remeber</p>
+		</div>
+	</div>
+
 </main>
-<!-- <footer>
-	
-</footer> --> 
-<script type="text/javascript" src = "JS/commentPage.js"></script>
+<div class = "stayFixed">
+	<form class = "can-hide" method="POST">
+		<input class = "input displayed" placeholder = "Your Comment" type = "text" name = "comment" id = "UserName"><br>
+	</form>
+	<div class = "footerdiv">
+		<span class = button>Your comment</span>
+	</div>
+</div>
+<script type="text/javascript" src = "JS/CommentPage.js"></script>
 </body>
 </html>

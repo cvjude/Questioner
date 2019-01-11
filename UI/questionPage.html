@@ -8,46 +8,93 @@
 	<meta name="author" content="Jude Violet">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" type="text/css" href="CSS/style-1.css">
+	<link rel="stylesheet" type="text/css" href="font-awesome/css/all.css">
 </head>
-<body>
-<div></div><!-- this div keeps the absolute property at rest-->
-<nav id = "stayFixed">
-	<span id = "floatLeft"> Jude's Questioner</span>
-	<span class = "floatRight"><a href="index.html">log out</a></span>
-	<span class = "floatRight"><a href="main.html">Home</a></span>
+<body id = "body">
+<nav id = "nav">
+	<div class = "container">
+		<ul>
+			<li>QUESTIONER</a></li>
+			<li class = "floatleft"><a href = "index.html">Log out</a>
+			</li>
+			<li class = "floatleft"><a href = "user-profile.html">Profile</a>
+			<li class = "floatleft"><a href = "main.html">Home</a>
+			</li>
+		</ul>
+	</div>
 </nav>
-<header>
-	<div class = "push"></div>
-</header>
 <main>
-	<section>
-		<h3 class = "content top">Questions</h3>
-		<div class = "content">
-			<p> 
-				<span>Author :</span> <span>Jude</span> 
-			</p>
-			<p>
-				<span>Question :</span> <span>Will Jude come</span> 
-			</p>
-			<span>
-				<img src="img/upvote.png"><span class = "likes">4</span>
-				<img src="img/downvote.png"><span class  = "likes">2</span>
-			</span>
-			<br>
-			<span>
-				<button class = "press">Add Question</button><button class = "press"><a href="CommentPage.html">View Comments</a></button>
-			</span>
-			<form class = "content">
-				<input placeholder = "Author" type = "text" name = "Author" id = "Author"><br>
-				<input placeholder = "Quesion" type = "textarea" name = "Question" id = "Question"><br>
-				<button class = "press">Post Question</button>
-			</form>
+	<div class = "container">
+		<section>
+		<div class = "plain">
+			<div class = "name">
+				<img src="./img/homeimg-1.png">
+			</div>
+			<div>
+				<h4>Happy people are meeting here</h2>
+				<h5>3rd of january 2017</h5>
+			</div>
 		</div>
 	</section>
+	</div>
+
+	<div class = "single-post question">
+		<div class = "post-content">
+			<a href="CommentPage.html">
+				<p><small>Cvjude asked</small></p>
+				<h5>Happiness?</h5>
+				<p>Why are does people happy what has happened to them</p>
+			</a>
+			<div class = "div-tag">
+				<p class = "upvote"><i class="far fa-thumbs-up"></i></p>
+				<p> 250 </p>
+				<p class = "downvote"><i class="far fa-thumbs-down"></i></p>
+			</div>
+		</div>
+	</div>
+
+	<div class = "single-post question">
+		<div class = "post-content">
+			<a href="CommentPage.html">
+				<p><small>Cvjude asked</small></p>
+				<h5>Happiness?</h5>
+				<p>Why are does people happy what has happened to them</p>
+			</a>
+			<div class = "div-tag">
+				<p class = "upvote"><i class="far fa-thumbs-up"></i></p>
+				<p> 250 </p>
+				<p class = "downvote"><i class="far fa-thumbs-down"></i></p>
+			</div>
+		</div>
+	</div>
+
+	<div class = "single-post question">
+		<div class = "post-content">
+			<a href="CommentPage.html">
+				<p><small>Cvjude asked</small></p>
+				<h5>Happiness?</h5>
+				<p>Why are does people happy what has happened to them</p>
+			</a>
+			<div class = "div-tag">
+				<p class = "upvote"><i class="far fa-thumbs-up"></i></p>
+				<p> 250 </p>
+				<p class = "downvote"><i class="far fa-thumbs-down"></i></p>
+			</div>
+		</div>
+	</div>
+
+
+</div>
 </main>
-<!-- <footer>
-	
-</footer> -->
+<div class = "stayFixed">
+	<form class = "can-hide" method="POST">
+		<input class = "input displayed" placeholder = "Title" type = "text" name = "title" id = "UserName"><br>
+		<input class = "input displayed" placeholder = "Your question" type = "password" name = "body" id = "password"><br>
+		</form>
+	<div class = "footerdiv">
+		<span class = button>Your question</span>
+	</div>
+</div>
 <script type="text/javascript" src = "JS/QuestionPage.js"></script>
 </body>
 </html>
