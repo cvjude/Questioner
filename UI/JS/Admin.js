@@ -13,4 +13,3 @@ button[2].addEventListener("click", (event) => {
 		button[2].textContent = "Add meetup";
 	}
 });
-
