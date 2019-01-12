@@ -6,7 +6,7 @@ const meetups = [
 		"images" : "[]" , // OPTIONAL: URL to the image location
 		"title" : "this is the fist meet up" ,
 		"happeningOn" : "2019-01-02T10:05:16.792Z", // when the meetup is holding
-		"tags" : [] 
+		"tags" : "[]" 
 	},
 	{
 		"id" : 2,
@@ -15,7 +15,7 @@ const meetups = [
 		"images" : "[]" , // OPTIONAL: URL to the image location
 		"title" : "this is the fist meet up" ,
 		"happeningOn" : "2019-01-03T12:05:16.792Z", // when the meetup is holding
-		"tags" : [] 
+		"tags" : "[]" 
 	},
 	{
 		"id" : 3,
@@ -24,7 +24,7 @@ const meetups = [
 		"images" : "[]" , // OPTIONAL: URL to the image location
 		"title" : "this is the fist meet up" ,
 		"happeningOn" : "2019-02-03T10:05:16.792Z", // when the meetup is holding
-		"tags" : [] 
+		"tags" : "[]" 
 	}
 ];
 
