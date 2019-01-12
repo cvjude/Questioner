@@ -2,8 +2,7 @@ import Joi from 'joi';
 import meetupSchema from './schemaData/meetupSchema';
 import questionSchema from './schemaData/questionSchema';
 import rsvpSchema from './schemaData/rsvpSchema';
-import voteSchema from './schemaData/voteSchema';
-import Util from './Utilities'
+import Util from './Utilities';
 
 class Validate {
   /**
@@ -19,8 +18,8 @@ class Validate {
     if (Number.isInteger(Number(req.params.id))) {
       next();
     } else {
-      return res.status(403).json({
-        status: 403,
+      return res.status(400).json({
+        status: 400,
         error: 'Id must be an integer',
       });
     }
@@ -41,28 +40,28 @@ class Validate {
       title, location, tags, happeningOn,
     } = req.body;
 
-    const validateObject = {title, location, happeningOn, tags, }
+    const validateObject = {
+      title, location, happeningOn, tags,
+    };
 
-    Joi.validate(validateObject, meetupSchema, (err, value) =>{
-      if(err){
-        return res.status(422).json({
-          status: 422,
-          error: err.details[0].message
-        })
-      }
-      else if(Util.stringIsNumber(title)){
-        res.status(422).json({
-          status: 422,
-          error: 'title should not be a number'
-        })
-      }
-      else if(Util.stringIsNumber(location)){
-        res.status(422).json({
-          status: 422,
-          error: 'location should not be a number'
+    Joi.validate(validateObject, meetupSchema, (err) => {
+      if (err) {
+        return res.status(400).json({
+          status: 400,
+          error: err.details[0].message,
         });
-      }else
-        next();
+      }
+      if (Util.stringIsNumber(title)) {
+        res.status(400).json({
+          status: 400,
+          error: 'title should not be a number',
+        });
+      } else if (Util.stringIsNumber(location)) {
+        res.status(400).json({
+          status: 400,
+          error: 'location should not be a number',
+        });
+      } else next();
     });
   }
 
@@ -80,28 +79,28 @@ class Validate {
       title, body, user, meetup,
     } = req.body;
 
-    const validateObject = {title, body, user, meetup, }
+    const validateObject = {
+      title, body, user, meetup,
+    };
 
-    Joi.validate(validateObject, questionSchema, (err, value) =>{
-      if(err){
-        return res.status(422).json({
-          status: 422,
-          error: err.details[0].message
-        })
-      }
-      else if(Util.stringIsNumber(title)){
-        res.status(422).json({
-          status: 422,
-          error: 'title should not be a number'
-        })
-      }
-      else if(Util.stringIsNumber(body)){
-        res.status(422).json({
-          status: 422,
-          error: 'body should not be a number'
+    Joi.validate(validateObject, questionSchema, (err) => {
+      if (err) {
+        return res.status(400).json({
+          status: 400,
+          error: err.details[0].message,
         });
-      }else
-        next();
+      }
+      if (Util.stringIsNumber(title)) {
+        res.status(400).json({
+          status: 400,
+          error: 'title should not be a number',
+        });
+      } else if (Util.stringIsNumber(body)) {
+        res.status(400).json({
+          status: 400,
+          error: 'body should not be a number',
+        });
+      } else next();
     });
   }
 
@@ -118,52 +117,21 @@ class Validate {
   static validateRsvp(req, res, next) {
     const { response, user } = req.body;
 
-    const validateObject = {response, user, }
+    const validateObject = { response, user };
 
-    Joi.validate(validateObject, rsvpSchema, (err, value) =>{
-      if(err){
-        return res.status(422).json({
-          status: 422,
-          error: err.details[0].message
-        })
-      }
-      else if(Util.stringIsNumber(response)){
-        res.status(422).json({
-          status: 422,
-          error: 'response should not be a number'
+    Joi.validate(validateObject, rsvpSchema, (err) => {
+      if (err) {
+        return res.status(400).json({
+          status: 400,
+          error: err.details[0].message,
         });
-      }else
-        next();
-    });
-  }
-
-  /**
-  * @static
-  * @description Validates an rsvp
-  * @param {Object} req - Request object
-  * @param {Object} res - Response object
-  * @param {Object} next - Next function call
-  * @memberof Controllers
-  */
-
-  static validateVote(req, res, next) {
-    const { vote } = req.body;
-    const validateObject = {vote, }
-
-    Joi.validate(validateObject, voteSchema, (err, value) =>{
-      if(err){
-        return res.status(422).json({
-          status: 422,
-          error: err.details[0].message
-        })
       }
-      else if(Util.stringIsNumber(vote)){
-        res.status(422).json({
-          status: 422,
-          error: 'response should not be a number'
+      if (Util.stringIsNumber(response)) {
+        res.status(400).json({
+          status: 400,
+          error: 'response should not be a number',
         });
-      }else
-        next();
+      } else next();
     });
   }
 }

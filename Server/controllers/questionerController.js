@@ -100,8 +100,8 @@ class Questioner {
 
     for (const member of meetups) {
       if (member.title === title && member.happeningOn === happeningOn) {
-        return res.status(403).json({
-          status: 403,
+        return res.status(400).json({
+          status: 400,
           error: 'meetup already exists',
         });
       }
@@ -143,14 +143,10 @@ class Questioner {
       title, body, meetup, createdBy, user,
     } = req.body;
 
-    const validateObject = {
-      title, body,
-    }
-
     for (const member of questions) {
       if (member.title === title && member.body === body) {
-        return res.status(403).json({
-          status: 403,
+        return res.status(400).json({
+          status: 400,
           error: 'question already exists',
         });
       }
@@ -168,7 +164,7 @@ class Questioner {
     };
 
     const obj = {
-      id: questionRecord.id, user, meetup, title, body
+      id: questionRecord.id, user, meetup, title, body,
     };
 
     questions.push(questionRecord);
@@ -191,20 +187,13 @@ class Questioner {
   static voteAQuestion(req, res) {
     const questionRecord = questions.find(question => parseInt(question.id, 10)
         === Number(req.params.id));
-    const vote = req.body.vote;
+
     if (questionRecord) {
-      if (vote.toLowerCase() === "upvote") { questionRecord.votes++; } 
-      else if (vote.toLowerCase() === "downvote") {
-        questionRecord.votes--;
+      if (req.url.endsWith('upvote')) { questionRecord.votes += 1; } else {
+        questionRecord.votes -= 1;
         if (questionRecord.votes < 0) {
           questionRecord.votes = 0;
         }
-      }
-      else{
-        return res.status(406).json({
-          status: 406,
-          error: 'Not Acceptable',
-        });
       }
 
       const {
@@ -215,8 +204,8 @@ class Questioner {
         meetup, title, body, votes,
       };
 
-      return res.status(202).json({
-        status: 202,
+      return res.status(200).json({
+        status: 200,
         data: obj,
       });
     }
@@ -238,7 +227,6 @@ class Questioner {
 
   static upDateRsvp(req, res) {
     const meetupRecord = meetups.find(meetup => parseInt(meetup.id, 10) === Number(req.params.id));
-    const status = req.params.status
 
     if (meetupRecord) {
       const {

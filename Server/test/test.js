@@ -3,7 +3,6 @@ import chaiHttp from 'chai-http';
 import app from '../app';
 import meetups from '../data/meetups';
 import questions from '../data/questions';
-import Rsvp from '../data/Rsvp';
 import testMeetups from './testdata/testMeetups';
 import testQuestions from './testdata/testQuestions';
 import newData from './testdata/newData';
@@ -79,8 +78,8 @@ describe('Questioner', () => {
         .get('/api/v1/meetups/d')
         .end((err, res) => {
           expect(res.body.error).to.equal('Id must be an integer');
-          expect(res.statusCode).to.equal(403);
-          expect(res.body.status).to.equal(403);
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.status).to.equal(400);
           done();
         });
     });
@@ -104,9 +103,9 @@ describe('Questioner', () => {
         .post('/api/v1/meetups')
         .send(testMeetups[1])
         .end((err, res) => {
-          expect(res.statusCode).to.equal(422);
-          expect(res.body.status).to.equal(422);
-          expect(res.body.error).to.equal("\"title\" is not allowed to be empty");
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.error).to.equal('"title" is not allowed to be empty');
           done();
         });
     });
@@ -116,9 +115,9 @@ describe('Questioner', () => {
         .post('/api/v1/meetups')
         .send(testMeetups[2])
         .end((err, res) => {
-          expect(res.statusCode).to.equal(422);
-          expect(res.body.status).to.equal(422);
-          expect(res.body.error).to.equal("\"location\" is not allowed to be empty");
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.error).to.equal('"location" is not allowed to be empty');
           done();
         });
     });
@@ -128,9 +127,9 @@ describe('Questioner', () => {
         .post('/api/v1/meetups')
         .send(testMeetups[3])
         .end((err, res) => {
-          expect(res.statusCode).to.equal(422);
-          expect(res.body.status).to.equal(422);
-          expect(res.body.error).to.equal("\"happeningOn\" must be a valid ISO 8601 date");
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.error).to.equal('"happeningOn" must be a valid ISO 8601 date');
           done();
         });
     });
@@ -140,8 +139,8 @@ describe('Questioner', () => {
         .post('/api/v1/meetups')
         .send(testMeetups[5])
         .end((err, res) => {
-          expect(res.statusCode).to.equal(403);
-          expect(res.body.status).to.equal(403);
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.status).to.equal(400);
           expect(res.body.error).to.equal('meetup already exists');
           done();
         });
@@ -166,9 +165,9 @@ describe('Questioner', () => {
         .post('/api/v1/questions')
         .send(testQuestions[1])
         .end((err, res) => {
-          expect(res.statusCode).to.equal(422);
-          expect(res.body.status).to.equal(422);
-          expect(res.body.error).to.equal("\"title\" is not allowed to be empty");
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.error).to.equal('"title" is not allowed to be empty');
           done();
         });
     });
@@ -179,9 +178,9 @@ describe('Questioner', () => {
         .post('/api/v1/questions')
         .send(testQuestions[2])
         .end((err, res) => {
-          expect(res.statusCode).to.equal(422);
-          expect(res.body.status).to.equal(422);
-          expect(res.body.error).to.equal("\"body\" is not allowed to be empty");
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.error).to.equal('"body" is not allowed to be empty');
           done();
         });
     });
@@ -192,9 +191,9 @@ describe('Questioner', () => {
         .post('/api/v1/questions')
         .send(testQuestions[3])
         .end((err, res) => {
-          expect(res.statusCode).to.equal(422);
-          expect(res.body.status).to.equal(422);
-          expect(res.body.error).to.equal("\"user\" must be a number");
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.error).to.equal('"user" must be a number');
           done();
         });
     });
@@ -205,9 +204,9 @@ describe('Questioner', () => {
         .post('/api/v1/questions')
         .send(testQuestions[4])
         .end((err, res) => {
-          expect(res.statusCode).to.equal(422);
-          expect(res.body.status).to.equal(422);
-          expect(res.body.error).to.equal("\"meetup\" must be a number");
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.error).to.equal('"meetup" must be a number');
           done();
         });
     });
@@ -217,8 +216,8 @@ describe('Questioner', () => {
         .post('/api/v1/questions')
         .send(testQuestions[0])
         .end((err, res) => {
-          expect(res.statusCode).to.equal(403);
-          expect(res.body.status).to.equal(403);
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.status).to.equal(400);
           expect(res.body.error).to.equal('question already exists');
           done();
         });
@@ -241,9 +240,9 @@ describe('Questioner', () => {
         .post('/api/v1/meetups/1/rsvps')
         .send(testRsvp[1])
         .end((err, res) => {
-          expect(res.statusCode).to.equal(422);
-          expect(res.body.status).to.equal(422);
-          expect(res.body.error).to.equal("\"response\" is not allowed to be empty");
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.error).to.equal('"response" is not allowed to be empty');
           done();
         });
     });
@@ -254,49 +253,34 @@ describe('Questioner', () => {
         .post('/api/v1/meetups/1/rsvps')
         .send(testRsvp[2])
         .end((err, res) => {
-          expect(res.statusCode).to.equal(422);
-          expect(res.body.status).to.equal(422);
-          expect(res.body.error).to.equal("\"user\" must be a number");
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.error).to.equal('"user" must be a number');
           done();
         });
     });
   });
 
   describe('/PATCH/api/v1/question/:id/upvote', () => {
-    it('user should not vote if vote field is blank', (done) => {
-      chai.request(app)
-        .patch('/api/v1/questions/1/upvote')
-        .send({ vote: '' })
-        .end((err, res) => {
-          expect(res.statusCode).to.equal(422);
-          expect(res.body.status).to.equal(422);
-          expect(res.body.error).to.equal("\"vote\" is not allowed to be empty");
-          done();
-        });
-    });
-
-
     it('user should be able to upvote a question', (done) => {
-      const votes = questions[0].votes;
+      const { votes } = questions[0];
       chai.request(app)
         .patch('/api/v1/questions/1/upvote')
-        .send({ vote: 'upvote' })
         .end((err, res) => {
-          expect(res.statusCode).to.equal(202);
-          expect(res.body.status).to.equal(202);
+          expect(res.statusCode).to.equal(200);
+          expect(res.body.status).to.equal(200);
           expect(res.body.data.votes).to.equal(votes + 1);
           done();
         });
     });
 
     it('user should be able to downvote a question', (done) => {
-      const votes = questions[0].votes;
+      const { votes } = questions[0];
       chai.request(app)
         .patch('/api/v1/questions/1/downvote')
-        .send({ vote: 'downvote' })
         .end((err, res) => {
-          expect(res.statusCode).to.equal(202);
-          expect(res.body.status).to.equal(202);
+          expect(res.statusCode).to.equal(200);
+          expect(res.body.status).to.equal(200);
           expect(res.body.data.votes).to.equal(votes - 1);
           done();
         });

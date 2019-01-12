@@ -6,7 +6,7 @@ const testQuestions = [
 		"meetup" : 1, // represents the meetup the question is for
 		"title" : "first question",
 		"body" : "The question is the first one" ,
-		"votes" : "0",
+		"votes" : 0,
 		"user" : 1
 	},
 	{
@@ -16,7 +16,7 @@ const testQuestions = [
 		"meetup" : 1, // represents the meetup the question is for
 		"title" : "",
 		"body" : "The question is the first one" ,
-		"votes" : "0",
+		"votes" : 0,
 		"user" : 1
 	},
 	{
@@ -26,7 +26,7 @@ const testQuestions = [
 		"meetup" : 1, // represents the meetup the question is for
 		"title" : "first question",
 		"body" : "" ,
-		"votes" : "0",
+		"votes" : 0,
 		"user" : 1
 	},
 	{
@@ -46,7 +46,7 @@ const testQuestions = [
 		"meetup" : "i", // represents the meetup the question is for
 		"title" : "first question",
 		"body" : "message" ,
-		"votes" : "0",
+		"votes" : 0,
 		"user" : 2
 	}
 ];

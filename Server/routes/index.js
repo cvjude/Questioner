@@ -20,7 +20,7 @@ router.post('/meetups/:id/rsvps', Validate.validateId, Validate.validateRsvp, Qu
 // question endpoints
 
 router.post('/questions', Validate.validateQuestion, Questioner.createQuestionRecord);
-router.patch('/questions/:id/upvote', Validate.validateId, Validate.validateVote, Questioner.voteAQuestion);
-router.patch('/questions/:id/downvote', Validate.validateId, Validate.validateVote, Questioner.voteAQuestion);
+router.patch('/questions/:id/upvote', Validate.validateId, Questioner.voteAQuestion);
+router.patch('/questions/:id/downvote', Validate.validateId, Questioner.voteAQuestion);
 
 export default router;

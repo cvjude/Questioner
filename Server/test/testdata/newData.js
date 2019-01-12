@@ -6,10 +6,10 @@ const newData = [
 		"tags" : ["violet", "amos"] 
 	},
 	{
-		"meetup" : "1", // represents the meetup the question is for
+		"meetup" : 1, // represents the meetup the question is for
 		"title" : "first",
 		"body" : "question" ,
-		"votes" : "0",
+		"votes" : 0,
 		"user" : 1
 	}
 
