@@ -5,6 +5,8 @@ import testMeetups from './testdata/testMeetups';
 import testQuestions from './testdata/testQuestions';
 import newData from './testdata/newData';
 import testRsvp from './testdata/testRsvp';
+import userData from './testdata/userData';
+let Token;
 
 
 const { expect } = chai;
@@ -24,6 +26,81 @@ describe('Questioner', () => {
     });
   });
 
+  describe('POST/api/v1/auth/signup ', () => {
+    // before((done) => {
+    //     chai.request(app)
+    //     .post('/auth/signup')
+    //     .send(userData[0])
+    //     .end((err, res) => {  
+    //         done();
+    //         return Token = res.body.token;
+    //     });
+    // });
+
+    it('should not sign up an already existing user', (done) => {
+      chai.request(app)
+      .post('/api/v1/auth/signup')
+      .send(userData[0])
+      .end((err, res) => { 
+          expect(res.status).to.equal(409);
+          done();
+      });
+    });
+
+    it('should sign up a new user', (done) => {
+      chai.request(app)
+      .post('/api/v1/auth/signup')
+      .send(userData[1])
+      .end((err, res) => {  
+          expect(res.status).to.equal(201);
+          done();
+      });
+    });
+
+    it('should not sign up a new user if username is invalid', done => {
+      chai.request(app)
+        .post('/api/v1/auth/signup')
+        .send(userData[2])
+        .end((err, res) => {
+            expect(res.status).to.equal(400);
+            done();
+        });
+    });
+
+  });    
+
+  describe('POST/api/v1/auth/login ', () => {
+    it('should login an existing user', (done) => {
+      chai.request(app)
+      .post('/api/v1/auth/login')
+      .send(userData[0])
+      .end((err, res) => { 
+          expect(res.status).to.equal(200);
+          done();
+      });
+    });
+
+    it('should not login if user name is invalid', (done) => {
+      chai.request(app)
+      .post('/api/v1/auth/login')
+      .send(userData[3])
+      .end((err, res) => {
+          expect(res.status).to.equal(404);
+          done();
+      });
+    });
+
+    it('should not login if password is invalid', done => {
+      chai.request(app)
+        .post('/api/v1/auth/login')
+        .send(userData[4])
+        .end((err, res) => {
+            expect(res.status).to.equal(400);
+            done();
+        });
+    });
+
+  }); 
 
   describe('GET/api/v1/meetups', () => {
     it('/:id should get a single meetup', (done) => {
@@ -60,7 +137,6 @@ describe('Questioner', () => {
         });
     });
   });
-
 
   describe('/POST/api/v1/meetups', () => {
     it('admin should not add a record if title dont exist', (done) => {
