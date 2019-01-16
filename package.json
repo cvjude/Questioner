@@ -7,8 +7,8 @@
   },
   "main": "index.js",
   "scripts": {
-    "create": "nodemon --exec babel-node Server/migration/createTable.js",
-    "drop": "nodemon --exec babel-node Server/migration/dropTable.js",
+    "create": "babel-node Server/migration/createTable.js",
+    "drop": "babel-node Server/migration/dropTable.js",
     "lint": "node ./node_modules/.bin/eslint",
     "test": "cross-env NODE_ENV=test nyc --require @babel/register  mocha Server/test --exit",
     "start": "npm run build && nodemon node dist/app.js",
