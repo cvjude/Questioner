@@ -18,4 +18,12 @@ app.listen(port, () => {
   console.log(`app is listening on ${port}!`);
 });
 
+app.use((err, res) => {
+  if (err) {
+    return res.status(500).json({
+      status: 404,
+      error: 'page not found',
+    });
+  }
+});
 export default app;

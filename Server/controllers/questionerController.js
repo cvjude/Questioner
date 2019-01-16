@@ -1,7 +1,5 @@
-import meetups from '../data/meetups';
-import questions from '../data/questions';
-import Rsvp from '../data/Rsvp';
 import GetDataSpec from '../helper/getDataSpec';
+import pool from '../config/config';
 
 class Questioner {
   /**
@@ -26,15 +24,13 @@ class Questioner {
     * @memberof questionerController
     */
 
-  static getMeetUpRecord(req, res) {
-    const meetupRecord = meetups.find(meetup => parseInt(meetup.id, 10)
-        === Number(req.params.id));
+  static async getMeetUpRecord(req, res) {
+    const response = await pool.query('SELECT * FROM meetups WHERE id = $1', [req.params.id]);
 
-
-    if (meetupRecord) {
+    if (response.rowCount >= 1) {
       const {
         id, title, location, happeingOn, tags,
-      } = meetupRecord;
+      } = response.rows[0];
 
       const obj = {
         id, title, location, happeingOn, tags,
@@ -61,10 +57,12 @@ class Questioner {
     * @memberof questionerController
     */
 
-  static getAllMeetUpRecords(req, res) {
+  static async getAllMeetUpRecords(req, res) {
+    const response = await pool.query('SELECT * from meetups');
+
     return res.status(200).json({
       status: 200,
-      data: GetDataSpec.getMeetupSpec(),
+      data: GetDataSpec.getMeetupSpec(response.rows),
     });
   }
 
@@ -77,10 +75,12 @@ class Questioner {
     * @memberof questionerController
     */
 
-  static getUpComingMeetUpRecords(req, res) {
+  static async getUpComingMeetUpRecords(req, res) {
+    const response = await pool.query('SELECT * from meetups');
+
     return res.status(200).json({
       status: 200,
-      data: GetDataSpec.getUpComingSpec(),
+      data: GetDataSpec.getUpComingSpec(response.row),
     });
   }
 
@@ -93,40 +93,49 @@ class Questioner {
     * @memberof questionerController
     */
 
-  static createMeetUpRecord(req, res) {
+  static async createMeetUpRecord(req, res) {
     const {
       title, location, happeningOn, images, tags,
     } = req.body;
 
-    for (const member of meetups) {
-      if (member.title === title && member.happeningOn === happeningOn) {
-        return res.status(400).json({
-          status: 400,
-          error: 'meetup already exists',
-        });
-      }
+    const createdOn = new Date().toString();
+    const happeningon = new Date(happeningOn).toString();
+    const date = new Date(happeningOn).getTime();
+    const img = JSON.stringify(images).replace(/\[/g, '{').replace(/\]/g, '}');
+    const tag = JSON.stringify(tags).replace(/\[/g, '{').replace(/\]/g, '}');
+
+    if (date < new Date().getTime()) {
+      return res.status(400).json({
+        status: 400,
+        error: 'Invalid meetup, meetup should not be in the past',
+      });
     }
 
+    try {
+      const meetupRecord = {
+        text: 'INSERT INTO meetups (title, location, happeningon, images, createdon, tags) VALUES($1, $2, $3, $4, $5, $6) RETURNING *',
+        values: [
+          title,
+          location,
+          happeningon,
+          img,
+          createdOn,
+          tag,
+        ],
+      };
 
-    const meetupRecord = {
-      id: meetups.length + 1,
-      title,
-      location,
-      happeningOn,
-      images,
-      createdOn: new Date().toJSON(),
-      tags,
-    };
+      const dataArray = await pool.query(meetupRecord);
 
-    const obj = {
-      title, location, happeningOn, tags,
-    };
-
-    meetups.push(meetupRecord);
-    return res.status(201).json({
-      status: 201,
-      data: obj,
-    });
+      return res.status(201).json({
+        status: 201,
+        data: GetDataSpec.getMeetupSpec(dataArray.rows, false),
+      });
+    } catch (err) {
+      res.status(400).json({
+        status: 500,
+        error: err,
+      });
+    }
   }
 
   /**
@@ -138,40 +147,39 @@ class Questioner {
     * @memberof questionerController
     */
 
-  static createQuestionRecord(req, res) {
+  static async createQuestionRecord(req, res) {
     const {
-      title, body, meetup, createdBy, user,
+      title, body, meetup, user,
     } = req.body;
+    const createdOn = new Date().toString();
+    const votes = 0;
+    const createdby = user;
 
-    for (const member of questions) {
-      if (member.title === title && member.body === body) {
-        return res.status(400).json({
-          status: 400,
-          error: 'question already exists',
-        });
-      }
+    try {
+      const questionRecord = {
+        text: 'INSERT INTO questions (createdOn, createdby, meetupid, title, body, votes) VALUES($1, $2, $3, $4, $5, $6) RETURNING *',
+        values: [
+          createdOn,
+          createdby,
+          meetup,
+          title,
+          body,
+          votes,
+        ],
+      };
+
+      const dataArray = await pool.query(questionRecord);
+
+      return res.status(201).json({
+        status: 201,
+        data: GetDataSpec.getQuestionSpec(dataArray.rows, false),
+      });
+    } catch (err) {
+      res.status(400).json({
+        status: 500,
+        error: err,
+      });
     }
-
-    const questionRecord = {
-      id: questions.length + 1,
-      title,
-      meetup,
-      body,
-      createdBy,
-      createdOn: new Date().toJSON(),
-      user,
-      votes: 0,
-    };
-
-    const obj = {
-      id: questionRecord.id, user, meetup, title, body,
-    };
-
-    questions.push(questionRecord);
-    return res.status(201).json({
-      status: 201,
-      data: obj,
-    });
   }
 
 
@@ -184,37 +192,39 @@ class Questioner {
     * @memberof questionerController
     */
 
-  static voteAQuestion(req, res) {
-    const questionRecord = questions.find(question => parseInt(question.id, 10)
-        === Number(req.params.id));
+  static async voteAQuestion(req, res) {
+    const response = await pool.query('SELECT * FROM votes WHERE questionid = $1', [req.params.id]);
 
-    if (questionRecord) {
-      if (req.url.endsWith('upvote')) { questionRecord.votes += 1; } else {
-        questionRecord.votes -= 1;
-        if (questionRecord.votes < 0) {
-          questionRecord.votes = 0;
-        }
+    let upvote = 0;
+    let downvote = 0;
+    let votes = 0;
+
+    if (response.rowCount >= 1) {
+      if (req.url.endsWith('upvote')) {
+        await pool.query('UPDATE votes set upvote = 1, downvote = 0 Where questionid = $1', [req.params.id]);
+      } else {
+        await pool.query('UPDATE votes set upvote = 0, downvote = 1 Where questionid = $1', [req.params.id]);
       }
 
-      const {
-        meetup, title, body, votes,
-      } = questionRecord;
-
-      const obj = {
-        meetup, title, body, votes,
-      };
+      upvote = await pool.query('SELECT SUM (upvote) from votes');
+      console.log(upvote.rows[0].sum);
+      downvote = await pool.query('SELECT SUM (downvote) from votes');
+      console.log(downvote.rows[0].sum);
+      votes = upvote.rows[0].sum - downvote.rows[0].sum;
+      if (votes < 0) { votes = 0; }
+      const dataArray = await pool.query(`UPDATE questions set votes = ${votes} Where id = $1 RETURNING *`, [req.params.id]);
 
       return res.status(200).json({
         status: 200,
-        data: obj,
+        data: GetDataSpec.getVoteSpec(dataArray.rows, false),
       });
     }
+
     return res.status(404).json({
       status: 404,
       error: 'question not found',
     });
   }
-
 
   /**
     * @static
@@ -225,37 +235,39 @@ class Questioner {
     * @memberof questionerController
     */
 
-  static upDateRsvp(req, res) {
-    const meetupRecord = meetups.find(meetup => parseInt(meetup.id, 10) === Number(req.params.id));
+  static async upDateRsvp(req, res) {
+    const {
+      response, user,
+    } = req.body;
+    const meetupRecord = await pool.query('SELECT * FROM meetups WHERE id = $1', [req.params.id]);
+    try {
+      if (meetupRecord.rowCount >= 1) {
+        const rsvp = {
+          text: 'INSERT INTO rsvp (userid, meetupid, response) VALUES($1, $2, $3)',
+          values: [1, user, response],
+        };
+        await pool.query(rsvp);
 
-    if (meetupRecord) {
-      const {
-        user, response,
-      } = req.body;
+        const meetup = meetupRecord.rows[0].id;
+        const topic = meetupRecord.rows[0].title;
+        const obj = { meetup, topic, response };
 
-      const rsvpobj = {
-        id: Rsvp.length + 1,
-        topic: meetupRecord.title,
-        meetup: meetupRecord.id,
-        status: response,
-        user,
-      };
+        return res.status(200).json({
+          status: 200,
+          data: obj,
+        });
+      }
 
-      const obj = {
-        meetup: meetupRecord.id,
-        topic: meetupRecord.topic,
-        status: response,
-      };
-      Rsvp.push(rsvpobj);
-      return res.status(200).json({
-        status: 200,
-        data: obj,
+      return res.status(404).json({
+        status: 404,
+        error: 'meetup not found',
+      });
+    } catch (err) {
+      res.status(400).json({
+        status: 500,
+        error: err,
       });
     }
-    return res.status(404).json({
-      status: 404,
-      error: 'meetup not found',
-    });
   }
 }
 
