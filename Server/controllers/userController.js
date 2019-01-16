@@ -25,7 +25,7 @@ class User {
       }
 
       const registered = new Date().toString();
-      const isAdmin = false;
+      const isadmin = false;
       const {
         firstname,
         lastname,
@@ -48,14 +48,14 @@ class User {
         registerd,
         isadmin,
         password)VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
-        values: [firstname, lastname, othername, email, phoneNumber, username, registered, isAdmin, hashPassword],
+        values: [firstname, lastname, othername, email, phoneNumber, username, registered, isadmin, hashPassword],
       };
 
       const userArray = await pool.query(userRecord);
 
       const { id } = userArray.rows[0].id;
       const TokenObj = {
-        id, firstname, lastname, isAdmin,
+        id, firstname, lastname, isadmin,
       };
 
       return res.status(201).json({
@@ -94,11 +94,11 @@ class User {
 
         if (checkPassword(password.trim(), hashPassword)) {
           const {
-            id, firstname, lastname, isAdmin,
+            id, firstname, lastname, isadmin,
           } = loginDetails;
 
           const tokenObj = {
-            id, firstname, lastname, isAdmin,
+            id, firstname, lastname, isadmin,
           };
 
           return res.status(200).json({

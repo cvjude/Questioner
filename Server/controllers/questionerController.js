@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken';
 import GetDataSpec from '../helper/getDataSpec';
 import pool from '../config/config';
 
@@ -13,6 +14,37 @@ class Questioner {
 
   static welcome(req, res) {
     return res.status(200).json({ message: 'welcome to Jude\'s Questioner' });
+  }
+
+  /**
+    * @static
+    * @description Delete's a meetup Record
+    * @param {object} req - Request object
+    * @param {object} res - Response object
+    * @returns {object} Json
+    * @memberof questionerController
+    */
+
+  static async deleteMeeupRecord(req, res) {
+    try {
+      const data = await pool.query('SELECT title FROM meetups where id = $1', [req.params.id]);
+      const deleted = await pool.query('DELETE FROM meetups WHERE id = $1', [req.params.id]);
+      if (!deleted.rowCount) {
+        return res.status(404).json({
+          status: 404,
+          message: 'Meetup not found',
+        });
+      }
+      return res.status(200).json({
+        status: 200,
+        data: [`deleted meetup ${data.rows[0].title}`],
+      });
+    } catch (error) {
+      return res.status(500).json({
+        status: 500,
+        response: 'Server error',
+      });
+    }
   }
 
   /**
@@ -136,6 +168,7 @@ class Questioner {
         error: err,
       });
     }
+    return true;
   }
 
   /**
@@ -180,6 +213,7 @@ class Questioner {
         error: err,
       });
     }
+    return true;
   }
 
 
@@ -207,9 +241,9 @@ class Questioner {
       }
 
       upvote = await pool.query('SELECT SUM (upvote) from votes');
-      console.log(upvote.rows[0].sum);
+      // console.log(upvote.rows[0].sum);
       downvote = await pool.query('SELECT SUM (downvote) from votes');
-      console.log(downvote.rows[0].sum);
+      // console.log(downvote.rows[0].sum);
       votes = upvote.rows[0].sum - downvote.rows[0].sum;
       if (votes < 0) { votes = 0; }
       const dataArray = await pool.query(`UPDATE questions set votes = ${votes} Where id = $1 RETURNING *`, [req.params.id]);
@@ -268,6 +302,7 @@ class Questioner {
         error: err,
       });
     }
+    return true;
   }
 }
 
