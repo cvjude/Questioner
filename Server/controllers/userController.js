@@ -48,7 +48,7 @@ class User {
         registerd,
         isadmin,
         password)VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
-        values: [firstname, lastname, othername, email, phoneNumber, username, registered, isAdmin, hashPassword],
+        values: [firstname, lastname, othername, email, phoneNumber, username, registered, isadmin, hashPassword],
       };
 
       const userArray = await pool.query(userRecord);

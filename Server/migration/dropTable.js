@@ -6,17 +6,53 @@ const dropRsvpTable = 'DROP TABLE votes';
 const dropVoteTable = 'DROP TABLE rsvp';
 const dropUsers = 'DROP TABLE users';
 
-async function deleted() {
+async function deletemeetup() {
   try {
     await pool.query(dropMeetupTable);
-    await pool.query(dropQuestionTable);
-    await pool.query(dropRsvpTable);
-    await pool.query(dropVoteTable);
-    await pool.query(dropUsers);
     console.log('Tables successfully deleted');
   } catch (error) {
-    console.log(error);
+    console.log('meetup doesn\'t exist');
   }
 }
 
-deleted();
+async function deletequestion() {
+  try {
+    await pool.query(dropQuestionTable);
+    console.log('Tables successfully deleted');
+  } catch (error) {
+    console.log('question doesn\'t exist');
+  }
+}
+
+async function deletersvp() {
+  try {
+    await pool.query(dropRsvpTable);
+    console.log('Tables successfully deleted');
+  } catch (error) {
+    console.log('rsvp doesn\'t exist');
+  }
+}
+
+async function deletevote() {
+  try {
+    await pool.query(dropVoteTable);
+    console.log('Tables successfully deleted');
+  } catch (error) {
+    console.log('vote doesn\'t exist');
+  }
+}
+
+async function deleteuser() {
+  try {
+    await pool.query(dropUsers);
+    console.log('Tables successfully deleted');
+  } catch (error) {
+    console.log('user doesn\'t exist');
+  }
+}
+
+deletemeetup();
+deletequestion();
+deletevote();
+deletersvp();
+deleteuser();

@@ -27,21 +27,11 @@ describe('Questioner', () => {
   });
 
   describe('POST/api/v1/auth/signup ', () => {
-    // before((done) => {
-    //     chai.request(app)
-    //     .post('/auth/signup')
-    //     .send(userData[0])
-    //     .end((err, res) => {  
-    //         done();
-    //         return Token = res.body.token;
-    //     });
-    // });
-
     it('should not sign up an already existing user', (done) => {
       chai.request(app)
       .post('/api/v1/auth/signup')
       .send(userData[0])
-      .end((err, res) => { 
+      .end((err, res) => {
           expect(res.status).to.equal(409);
           done();
       });
@@ -51,7 +41,7 @@ describe('Questioner', () => {
       chai.request(app)
       .post('/api/v1/auth/signup')
       .send(userData[1])
-      .end((err, res) => {  
+      .end((err, res) => {
           expect(res.status).to.equal(201);
           done();
       });
