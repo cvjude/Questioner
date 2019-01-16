@@ -5,8 +5,8 @@ class Util {
   * @memberof questionerController
   */
   static stringIsNumber(str) {
-	  if (Number.isInteger(Number(str))) { return true; }
-	  return false;
+    if (Number.isInteger(Number(str))) { return true; }
+    return false;
   }
 }
 
