@@ -16,7 +16,7 @@ env:
 
 before_script:
   - psql -c 'create database Questioner;' -U postgres
-  -npm run create
+  - npm run create
 
 script:
   - npm run test 
