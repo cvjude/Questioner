@@ -51,7 +51,7 @@ class GetDataSpec {
 
   /**
   * @Static
-  * @description return the array of all the meetup records according to the given specifications
+  * @description return the array with the question spec
   * @memberof questionerController
   */
 
@@ -82,7 +82,7 @@ class GetDataSpec {
 
   /**
   * @Static
-  * @description return the array of all the meetup records according to the given specifications
+  * @description return the array of the Rsvp Coording to the specifications
   * @memberof questionerController
   */
   static getVoteSpec(meetups, removeId = true) {
