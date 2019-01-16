@@ -1,8 +1,9 @@
 import Joi from 'joi';
-import meetupSchema from './schemaData/meetupSchema';
-import questionSchema from './schemaData/questionSchema';
-import rsvpSchema from './schemaData/rsvpSchema';
-import Util from './Utilities';
+import meetupSchema from '../helper/schemaData/meetupSchema';
+import questionSchema from '../helper/schemaData/questionSchema';
+import rsvpSchema from '../helper/schemaData/rsvpSchema';
+import signupSchema from '../helper/schemaData/signupSchema'
+import Util from '../helper/Utilities';
 
 class Validate {
   /**
@@ -25,6 +26,36 @@ class Validate {
     }
   }
 
+
+/**
+  * @static
+  * @description Validates a new meet up
+  * @param {Object} req - Request object
+  * @param {Object} res - Response object
+  * @param {Object} next - Next function call
+  * @memberof Controllers
+  */
+
+  static validateUser(req, res, next) {
+    const {
+      firstname, lastname, othername, email, phoneNumber, username, password,
+    } = req.body;
+
+    const validateObject = {
+      firstname, lastname, othername, email, phoneNumber, username, password,
+    };
+
+    Joi.validate(validateObject, signupSchema, (err) => {
+      if (err) {
+        return res.status(400).json({
+          status: 400,
+          error: err.details[0].message,
+        });
+      } else {
+       next();
+      }
+    });
+  }
 
   /**
   * @static
