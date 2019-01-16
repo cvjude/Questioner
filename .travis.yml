@@ -11,6 +11,7 @@ services:
   - postgresql
     
 before_script:
+  - npm run drop
   - psql -c 'create database travis_ci_test;' -U postgres
   - npm run create
 
