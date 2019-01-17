@@ -53,7 +53,7 @@ class User {
 
       const userArray = await pool.query(userRecord);
 
-      const { id } = userArray.rows[0].id;
+      const { id } = userArray.rows[0];
       const TokenObj = {
         id, firstname, lastname, isadmin,
       };
@@ -104,8 +104,8 @@ class User {
           return res.status(200).json({
             status: 200,
             data: [{
-              Token: token(tokenObj),
-              data: loginDetails,
+              token: token(tokenObj),
+              data: [loginDetails],
             }],
           });
         }

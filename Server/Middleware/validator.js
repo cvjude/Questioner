@@ -4,6 +4,9 @@ import questionSchema from '../helper/schemaData/questionSchema';
 import rsvpSchema from '../helper/schemaData/rsvpSchema';
 import signupSchema from '../helper/schemaData/signupSchema';
 import loginSchema from '../helper/schemaData/loginSchema';
+import CommentSchema from '../helper/schemaData/commentSchema';
+import tagSchema from '../helper/schemaData/tagSchema';
+import imageSchema from '../helper/schemaData/imageSchema';
 import Util from '../helper/Utilities';
 
 class Validate {
@@ -52,9 +55,9 @@ class Validate {
           status: 400,
           error: err.details[0].message,
         });
-      } 
-       next();
-      
+      }
+      next();
+
     });
   }
 
@@ -77,14 +80,95 @@ class Validate {
     };
 
     Joi.validate(validateObject, loginSchema, (err) => {
-    if (err) {
-      return res.status(400).json({
-        status: 400,
-        error: err.details[0].message,
-      });
-    } 
-     next();
-  });
+      if (err) {
+        return res.status(400).json({
+          status: 400,
+          error: err.details[0].message,
+        });
+      }
+      next();
+    });
+  }
+
+  /**
+  * @static
+  * @description Validates a comment
+  * @param {Object} req - Request object
+  * @param {Object} res - Response object
+  * @param {Object} next - Next function call
+  * @memberof Controllers
+  */
+
+  static validateComment(req, res, next) {
+    const { comment } = req.body;
+
+    const validateObject = {
+      comment,
+    };
+
+    Joi.validate(validateObject, CommentSchema, (err) => {
+      if (err) {
+        return res.status(400).json({
+          status: 400,
+          error: err.details[0].message,
+        });
+      }
+      next();
+    });
+  }
+
+  /**
+  * @static
+  * @description Validates a comment
+  * @param {Object} req - Request object
+  * @param {Object} res - Response object
+  * @param {Object} next - Next function call
+  * @memberof Controllers
+  */
+
+  static validateTag(req, res, next) {
+    const { tags } = req.body;
+
+    const validateObject = {
+      tags,
+    };
+
+    Joi.validate(validateObject, CommentSchema, (err) => {
+      if (err) {
+        return res.status(400).json({
+          status: 400,
+          error: err.details[0].message,
+        });
+      }
+      next();
+    });
+  }
+
+  /**
+  * @static
+  * @description Validates a comment
+  * @param {Object} req - Request object
+  * @param {Object} res - Response object
+  * @param {Object} next - Next function call
+  * @memberof Controllers
+  */
+
+  static validateImage(req, res, next) {
+    const { images } = req.body;
+
+    const validateObject = {
+      images,
+    };
+
+    Joi.validate(validateObject, CommentSchema, (err) => {
+      if (err) {
+        return res.status(400).json({
+          status: 400,
+          error: err.details[0].message,
+        });
+      }
+      next();
+    });
   }
 
   /**
@@ -137,11 +221,11 @@ class Validate {
 
   static validateQuestion(req, res, next) {
     const {
-      title, body, user, meetup,
+      title, body, meetup,
     } = req.body;
 
     const validateObject = {
-      title, body, user, meetup,
+      title, body, meetup,
     };
 
     Joi.validate(validateObject, questionSchema, (err) => {
@@ -176,9 +260,9 @@ class Validate {
   */
 
   static validateRsvp(req, res, next) {
-    const { response, user } = req.body;
+    const { status } = req.body;
 
-    const validateObject = { response, user };
+    const validateObject = { status };
 
     Joi.validate(validateObject, rsvpSchema, (err) => {
       if (err) {
@@ -187,10 +271,10 @@ class Validate {
           error: err.details[0].message,
         });
       }
-      if (Util.stringIsNumber(response)) {
+      if (Util.stringIsNumber(status)) {
         res.status(400).json({
           status: 400,
-          error: 'response should not be a number',
+          error: 'status should not be a number',
         });
       } else next();
     });
