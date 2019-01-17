@@ -324,8 +324,8 @@ class Questioner {
         const topic = meetupRecord.rows[0].title;
         const obj = { meetup, topic, status };
 
-        return res.status(200).json({
-          status: 200,
+        return res.status(201).json({
+          status: 201,
           data: [obj],
         });
       }

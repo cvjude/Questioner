@@ -14,7 +14,7 @@ router.delete('/meetups/:id', Authenticate.isAdmin, Questioner.deleteMeeupRecord
 
 // user endpoints
 router.post('/auth/signup', Validate.validateSignup, User.signup);
-router.post('/auth/login', Validate.validateLogin, Validate.validateLogin, User.login);
+router.post('/auth/login', Validate.validateLogin, User.login);
 
 // meetup endpoints
 router.get('/meetups/', Authenticate.authen, Questioner.getAllMeetUpRecords);

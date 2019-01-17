@@ -5,10 +5,10 @@ const meetupTable = `CREATE TABLE IF NOT EXISTS meetups(
   id serial PRIMARY KEY,
   createdOn text NOT NULL,
   location text NOT NULL,
-  images text[] NOT NULL,
+  images text[],
   title text NOT NULL,
   happeningOn text NOT NULL,
-  tags text[] NOT NULL
+  tags text[]
   );
 `;
 
@@ -16,9 +16,9 @@ const userTable = `CREATE TABLE IF NOT EXISTS users(
   id serial PRIMARY KEY,
   firstname text NOT NULL,
   lastname text NOT NULL,
-  othername text NOT NULL,
+  othername text,
   email text NOT NULL,
-  phoneNumber text NOT NULL,
+  phoneNumber text,
   username text NOT NULL,
   registerd text NOT NULL,
   isAdmin text NOT NULL,
