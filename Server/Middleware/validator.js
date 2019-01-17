@@ -100,7 +100,7 @@ class Validate {
   */
 
   static validateComment(req, res, next) {
-    const { comment } = req.body;
+    const { comment,questionid } = req.body;
 
     const validateObject = {
       comment,
@@ -113,7 +113,13 @@ class Validate {
           error: err.details[0].message,
         });
       }
-      next();
+      if (Util.stringIsNumber(questionid)) {
+        return res.status(400).json({
+          status: 400,
+          error: 'status should not be a number',
+        });
+      }
+      else next();
     });
   }
 
@@ -197,12 +203,12 @@ class Validate {
         });
       }
       if (Util.stringIsNumber(title)) {
-        res.status(400).json({
+        return res.status(400).json({
           status: 400,
           error: 'title should not be a number',
         });
       } else if (Util.stringIsNumber(location)) {
-        res.status(400).json({
+        return res.status(400).json({
           status: 400,
           error: 'location should not be a number',
         });
@@ -236,12 +242,12 @@ class Validate {
         });
       }
       if (Util.stringIsNumber(title)) {
-        res.status(400).json({
+        return res.status(400).json({
           status: 400,
           error: 'title should not be a number',
         });
       } else if (Util.stringIsNumber(body)) {
-        res.status(400).json({
+        return res.status(400).json({
           status: 400,
           error: 'body should not be a number',
         });
@@ -272,7 +278,7 @@ class Validate {
         });
       }
       if (Util.stringIsNumber(status)) {
-        res.status(400).json({
+        return res.status(400).json({
           status: 400,
           error: 'status should not be a number',
         });

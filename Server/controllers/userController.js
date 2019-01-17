@@ -83,7 +83,7 @@ class User {
  */
   static async login(req, res) {
     try {
-      const data = await pool.query('SELECT * FROM users WHERE username = $1', [
+      const data = await pool.query('SELECT * FROM users WHERE username = $1', [ 
         req.body.username,
       ]);
 
