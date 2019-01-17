@@ -131,7 +131,7 @@ describe('Questioner', () => {
         .get('/api/v1/meetups/upcoming')
         .set('authorization', `Bearer ${ null }`)
         .end((err, res) => {
-          expect(res.statusCode).to.equal(4013);
+          expect(res.statusCode).to.equal(401);
           done();
         });
     });
