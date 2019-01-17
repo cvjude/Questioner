@@ -25,7 +25,7 @@ class Authenticate {
     const verify = jwt.verify(token, process.env.TOKEN_KEY, (err, decoded) => {
       if (err) {
         return res.status(401).json({
-          status: 400,
+          status: 401,
           error: 'Unauthorized user',
         });
       }
