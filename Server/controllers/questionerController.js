@@ -1,4 +1,5 @@
-import jwt from 'jsonwebtoken';
+/* eslint-disable linebreak-style */
+import Utils from '../helper/Utilities';
 import GetDataSpec from '../helper/getDataSpec';
 import pool from '../config/config';
 
@@ -57,45 +58,50 @@ class Questioner {
     */
 
   static async getMeetUpRecord(req, res) {
-    const response = await pool.query('SELECT * FROM meetups WHERE id = $1', [req.params.id]);
-
-    if (response.rowCount >= 1) {
-      const {
-        id, title, location, happeingOn, tags,
-      } = response.rows[0];
-
-      const obj = {
-        id, title, location, happeingOn, tags,
-      };
-
-      return res.status(200).json({
-        status: 200,
-        data: obj,
+    try {
+      const response = await pool.query('SELECT id, title, location, happeningon, tags FROM meetups WHERE id = $1', [req.params.id]);
+      if (response.rowCount >= 1) {
+        return res.status(200).json({
+          status: 200,
+          data: response.rows,
+        });
+      }
+      return res.status(404).json({
+        status: 404,
+        error: 'meetup not found',
+      });
+    
+    } catch (err) {
+      return res.status(500).json({
+        status: 500,
+        response: 'Server error',
       });
     }
-
-    return res.status(404).json({
-      status: 404,
-      error: 'meetup not found',
-    });
   }
 
   /**
-    * @static
-    * @description Get all meetup record
-    * @param {object} req - Request object
-    * @param {object} res - Response object
-    * @returns {object} Json
-    * @memberof questionerController
-    */
+      * @static
+      * @description Get all meetup record
+      * @param {object} req - Request object
+      * @param {object} res - Response object
+      * @returns {object} Json
+      * @memberof questionerController
+      */
 
   static async getAllMeetUpRecords(req, res) {
-    const response = await pool.query('SELECT * from meetups');
+    try {
+      const response = await pool.query('SELECT id, title, happeningon, location, tags from meetups');
 
-    return res.status(200).json({
-      status: 200,
-      data: GetDataSpec.getMeetupSpec(response.rows),
-    });
+      return res.status(200).json({
+        status: 200,
+        data: response.rows,
+      });
+    } catch (err) {
+      return res.status(500).json({
+        status: 500,
+        response: 'Server error',
+      });
+    }
   }
 
   /**
@@ -109,10 +115,9 @@ class Questioner {
 
   static async getUpComingMeetUpRecords(req, res) {
     const response = await pool.query('SELECT * from meetups');
-
     return res.status(200).json({
       status: 200,
-      data: GetDataSpec.getUpComingSpec(response.row),
+      data: GetDataSpec.getUpComingSpec(response.rows),
     });
   }
 
@@ -126,26 +131,28 @@ class Questioner {
     */
 
   static async createMeetUpRecord(req, res) {
-    const {
-      title, location, happeningOn, images, tags,
-    } = req.body;
-
-    const createdOn = new Date().toString();
-    const happeningon = new Date(happeningOn).toString();
-    const date = new Date(happeningOn).getTime();
-    const img = JSON.stringify(images).replace(/\[/g, '{').replace(/\]/g, '}');
-    const tag = JSON.stringify(tags).replace(/\[/g, '{').replace(/\]/g, '}');
-
-    if (date < new Date().getTime()) {
-      return res.status(400).json({
-        status: 400,
-        error: 'Invalid meetup, meetup should not be in the past',
-      });
-    }
-
     try {
+      const {
+        title, location, happeningOn, images, tags,
+      } = req.body;
+
+      const createdOn = new Date().toString();
+      const happeningon = new Date(happeningOn).toString();
+      const date = new Date(happeningOn).getTime();
+      let img = '{}';
+      let tag = '{}';
+      if (images) { img = JSON.stringify(images).replace(/\[/g, '{').replace(/\]/g, '}'); }
+      if (tags) { tag = JSON.stringify(tags).replace(/\[/g, '{').replace(/\]/g, '}'); }
+
+      if (date < new Date().getTime()) {
+        return res.status(400).json({
+          status: 400,
+          error: 'Invalid meetup, meetup should not be in the past',
+        });
+      }
+
       const meetupRecord = {
-        text: 'INSERT INTO meetups (title, location, happeningon, images, createdon, tags) VALUES($1, $2, $3, $4, $5, $6) RETURNING *',
+        text: 'INSERT INTO meetups (title, location, happeningon, images, createdon, tags) VALUES($1, $2, $3, $4, $5, $6) RETURNING title, location, happeningon, tags',
         values: [
           title,
           location,
@@ -160,7 +167,7 @@ class Questioner {
 
       return res.status(201).json({
         status: 201,
-        data: GetDataSpec.getMeetupSpec(dataArray.rows, false),
+        data: dataArray.rows,
       });
     } catch (err) {
       res.status(400).json({
@@ -181,16 +188,17 @@ class Questioner {
     */
 
   static async createQuestionRecord(req, res) {
-    const {
-      title, body, meetup, user,
-    } = req.body;
-    const createdOn = new Date().toString();
-    const votes = 0;
-    const createdby = user;
-
     try {
+      const TokenObj = Utils.decoder(req, res);
+      const {
+        title, body, meetup,
+      } = req.body;
+      const createdOn = new Date().toString();
+      const votes = 0;
+      const createdby = TokenObj.id;
+
       const questionRecord = {
-        text: 'INSERT INTO questions (createdOn, createdby, meetupid, title, body, votes) VALUES($1, $2, $3, $4, $5, $6) RETURNING *',
+        text: 'INSERT INTO questions (createdOn, createdby, meetupid, title, body, votes) VALUES($1, $2, $3, $4, $5, $6)',
         values: [
           createdOn,
           createdby,
@@ -201,11 +209,15 @@ class Questioner {
         ],
       };
 
-      const dataArray = await pool.query(questionRecord);
+      await pool.query(questionRecord);
+      const user = createdby;
+      const obj = {
+        user, meetup, title, body,
+      };
 
       return res.status(201).json({
         status: 201,
-        data: GetDataSpec.getQuestionSpec(dataArray.rows, false),
+        data: [obj],
       });
     } catch (err) {
       res.status(400).json({
@@ -213,7 +225,6 @@ class Questioner {
         error: err,
       });
     }
-    return true;
   }
 
 
@@ -227,37 +238,63 @@ class Questioner {
     */
 
   static async voteAQuestion(req, res) {
-    const response = await pool.query('SELECT * FROM votes WHERE questionid = $1', [req.params.id]);
+    try {
+      const TokenObj = Utils.decoder(req, res);
+      const question = req.params.id;
+      const response = await pool.query('SELECT * FROM questions WHERE id = $1', [question]);
 
-    let upvote = 0;
-    let downvote = 0;
-    let votes = 0;
+      let upvote = 0;
+      let downvote = 0;
 
-    if (response.rowCount >= 1) {
-      if (req.url.endsWith('upvote')) {
-        await pool.query('UPDATE votes set upvote = 1, downvote = 0 Where questionid = $1', [req.params.id]);
-      } else {
-        await pool.query('UPDATE votes set upvote = 0, downvote = 1 Where questionid = $1', [req.params.id]);
+      if (response.rowCount >= 1) {
+        const user = await pool.query('SELECT * FROM votes WHERE userid = $1', [TokenObj.id]);
+
+        if (user.rowCount === 0) {
+          const newUser = {
+            text: 'INSERT INTO votes (questionid, userid, upvote, downvote) VALUES($1, $2, $3, $4)',
+            values: [question, TokenObj.id, 0, 0],
+          };
+          await pool.query(newUser);
+        }
+
+        if (req.url.endsWith('upvote')) {
+          if (user.rows[0].upvote === 1) { await pool.query('UPDATE votes set upvote = 0, downvote = 0 Where userid = $1', [TokenObj.id]); } else { await pool.query('UPDATE votes set upvote = 1, downvote = 0 Where userid = $1', [TokenObj.id]); }
+        } if (req.url.endsWith('downvote')) {
+          if (user.rows[0].downvote === 1) { await pool.query('UPDATE votes set downvote = 0, upvote = 0 Where userid = $1', [TokenObj.id]); } else if (user.rows[0].downvote === 0) { await pool.query('UPDATE votes set downvote = 1, upvote = 0 Where userid = $1', [TokenObj.id]); }
+        }
+
+        upvote = await pool.query('SELECT SUM (upvote) from votes Where questionid = $1', [question]);
+        downvote = await pool.query('SELECT SUM (downvote) from votes Where questionid = $1', [question]);
+        let vote = upvote.rows[0].sum - downvote.rows[0].sum;
+
+        if (vote < 0) { vote = 0; }
+
+        const dataArray = await pool.query(`UPDATE questions set votes = ${vote} Where id = $1 RETURNING meetupid, title, body, votes`, [question]);
+        const {
+          meetupid, title, body, votes,
+        } = dataArray.rows[0];
+        const meetup = meetupid;
+
+        const obj = {
+          meetup, title, body, votes,
+        };
+
+        return res.status(200).json({
+          status: 200,
+          data: [obj],
+        });
       }
 
-      upvote = await pool.query('SELECT SUM (upvote) from votes');
-      // console.log(upvote.rows[0].sum);
-      downvote = await pool.query('SELECT SUM (downvote) from votes');
-      // console.log(downvote.rows[0].sum);
-      votes = upvote.rows[0].sum - downvote.rows[0].sum;
-      if (votes < 0) { votes = 0; }
-      const dataArray = await pool.query(`UPDATE questions set votes = ${votes} Where id = $1 RETURNING *`, [req.params.id]);
-
-      return res.status(200).json({
-        status: 200,
-        data: GetDataSpec.getVoteSpec(dataArray.rows, false),
+      return res.status(404).json({
+        status: 404,
+        error: 'question not found',
+      });
+    } catch (err) {
+      return res.status(500).json({
+        status: 500,
+        response: 'Server error',
       });
     }
-
-    return res.status(404).json({
-      status: 404,
-      error: 'question not found',
-    });
   }
 
   /**
@@ -270,25 +307,26 @@ class Questioner {
     */
 
   static async upDateRsvp(req, res) {
-    const {
-      response, user,
-    } = req.body;
-    const meetupRecord = await pool.query('SELECT * FROM meetups WHERE id = $1', [req.params.id]);
     try {
+      const TokenObj = Utils.decoder(req, res);
+      const {
+        status,
+      } = req.body;
+      const meetupRecord = await pool.query('SELECT * FROM meetups WHERE id = $1', [req.params.id]);
       if (meetupRecord.rowCount >= 1) {
         const rsvp = {
-          text: 'INSERT INTO rsvp (userid, meetupid, response) VALUES($1, $2, $3)',
-          values: [1, user, response],
+          text: 'INSERT INTO rsvp (userid, meetupid, status) VALUES($1, $2, $3)',
+          values: [TokenObj.id, req.params.id, status],
         };
         await pool.query(rsvp);
 
         const meetup = meetupRecord.rows[0].id;
         const topic = meetupRecord.rows[0].title;
-        const obj = { meetup, topic, response };
+        const obj = { meetup, topic, status };
 
         return res.status(200).json({
           status: 200,
-          data: obj,
+          data: [obj],
         });
       }
 
@@ -302,7 +340,56 @@ class Questioner {
         error: err,
       });
     }
-    return true;
+  }
+
+  /**
+    * @static
+    * @description upvote vote a question
+    * @param {object} req - Request object
+    * @param {object} res - Response object
+    * @returns {object} Json
+    * @memberof questionerController
+    */
+
+  static async commentAQuestion(req, res) {
+    try {
+      const TokenObj = Utils.decoder(req, res);
+      const { questionid } = req.body;
+      const response = await pool.query('SELECT * FROM questions WHERE id = $1', [questionid]);
+
+      const { comment } = req.body;
+
+      if (response.rowCount >= 1) {
+        const commentRecord = {
+          text: 'INSERT INTO comments(userid, questionid, comment) VALUES($1, $2, $3) RETURNING *',
+          values: [
+            TokenObj.id,
+            questionid,
+            comment,
+          ],
+        };
+        const { title, body } = response.rows[0];
+        const obj = {
+          questionid, title, body, comment,
+        };
+
+        await pool.query(commentRecord);
+
+        return res.status(201).json({
+          status: 201,
+          data: [obj],
+        });
+      }
+      return res.status(404).json({
+        status: 404,
+        error: 'question not found',
+      });
+    } catch (err) {
+      return res.status(500).json({
+        status: 500,
+        response: 'Server error',
+      });
+    }
   }
 }
 

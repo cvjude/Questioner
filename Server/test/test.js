@@ -6,7 +6,8 @@ import testQuestions from './testdata/testQuestions';
 import newData from './testdata/newData';
 import testRsvp from './testdata/testRsvp';
 import userData from './testdata/userData';
-let Token;
+let adminToken;
+let userToken;
 
 
 const { expect } = chai;
@@ -43,6 +44,7 @@ describe('Questioner', () => {
       .send(userData[1])
       .end((err, res) => {
           expect(res.status).to.equal(201);
+          userToken = res.body.data[0].token;
           done();
       });
     });
@@ -66,6 +68,7 @@ describe('Questioner', () => {
       .send(userData[0])
       .end((err, res) => { 
           expect(res.status).to.equal(200);
+          adminToken = res.body.data[0].token;
           done();
       });
     });
@@ -96,25 +99,42 @@ describe('Questioner', () => {
     it('/:id should get a single meetup', (done) => {
       chai.request(app)
         .get('/api/v1/meetups/1')
+        .set('authorization', `Bearer ${ adminToken }`)
         .end((err, res) => {
           expect(res.statusCode).to.equal(200);
-          expect(1).to.equal(res.body.data.id);
-          expect(res.body.status).to.equal(200);
           done();
         });
     });
 
-    it('/:id should not get a single meetup if id does not exist', (done) => {
+    it('/:id should get all meetup records', (done) => {
       chai.request(app)
-        .get('/api/v1/meetups/12')
+        .get('/api/v1/meetups/')
+        .set('authorization', `Bearer ${ adminToken }`)
         .end((err, res) => {
-          expect(res.body.error).to.equal('meetup not found');
-          expect(res.statusCode).to.equal(404);
-          expect(res.body.status).to.equal(404);
+          expect(res.statusCode).to.equal(200);
           done();
         });
     });
 
+    it('/:id should get all upcoming meetup records', (done) => {
+      chai.request(app)
+        .get('/api/v1/meetups/upcoming')
+        .set('authorization', `Bearer ${ adminToken }`)
+        .end((err, res) => {
+          expect(res.statusCode).to.equal(200);
+          done();
+        });
+    });
+
+    it('/:id should not get all meetup records if credentails are wrong', (done) => {
+      chai.request(app)
+        .get('/api/v1/meetups/upcoming')
+        .set('authorization', `Bearer ${ userToken }`)
+        .end((err, res) => {
+          expect(res.statusCode).to.equal(400);
+          done();
+        });
+    });
 
     it('/:id should not get a meetup with the id being a string', (done) => {
       chai.request(app)
@@ -157,6 +177,7 @@ describe('Questioner', () => {
       it('user should be able to post a question', (done) => {
         chai.request(app)
           .post('/api/v1/questions')
+          .set('Authorization', `Bearer ${ userToken }`)
           .send(newData[1])
           .end((err, res) => {
             expect(res.statusCode).to.equal(201);
@@ -164,6 +185,7 @@ describe('Questioner', () => {
           });
       });
 
+    
 
       it('user should not post if title field is blank', (done) => {
         chai.request(app)
@@ -191,19 +213,6 @@ describe('Questioner', () => {
       });
 
 
-      it('user should not post if userid is not a number', (done) => {
-        chai.request(app)
-          .post('/api/v1/questions')
-          .send(testQuestions[3])
-          .end((err, res) => {
-            expect(res.statusCode).to.equal(400);
-            expect(res.body.status).to.equal(400);
-            expect(res.body.error).to.equal('"user" must be a number');
-            done();
-          });
-      });
-
-
       it('user should not post if meetupid is not a number', (done) => {
         chai.request(app)
           .post('/api/v1/questions')
@@ -218,30 +227,18 @@ describe('Questioner', () => {
     });
 
     describe('/POST/api/v1/meetups/:id/rsvps', () => {
-      it('user should not post if response field is blank', (done) => {
+      it('user should not post if status field is blank', (done) => {
         chai.request(app)
           .post('/api/v1/meetups/1/rsvps')
           .send(testRsvp[1])
           .end((err, res) => {
             expect(res.statusCode).to.equal(400);
             expect(res.body.status).to.equal(400);
-            expect(res.body.error).to.equal('"response" is not allowed to be empty');
+            expect(res.body.error).to.equal('"status" is required');
             done();
           });
       });
 
-
-      it('user should not post if userid is not a number', (done) => {
-        chai.request(app)
-          .post('/api/v1/meetups/1/rsvps')
-          .send(testRsvp[2])
-          .end((err, res) => {
-            expect(res.statusCode).to.equal(400);
-            expect(res.body.status).to.equal(400);
-            expect(res.body.error).to.equal('"user" must be a number');
-            done();
-          });
-      });
     });
   });
 });

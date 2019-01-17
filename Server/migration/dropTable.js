@@ -5,6 +5,9 @@ const dropQuestionTable = 'DROP TABLE questions';
 const dropRsvpTable = 'DROP TABLE votes';
 const dropVoteTable = 'DROP TABLE rsvp';
 const dropUsers = 'DROP TABLE users';
+const dropComments = 'DROP TABLE comments';
+const dropTags = 'DROP TABLE tags';
+const dropImages = 'DROP TABLE images';
 
 async function deletemeetup() {
   try {
@@ -51,8 +54,37 @@ async function deleteuser() {
   }
 }
 
+async function deleteComment() {
+  try {
+    await pool.query(dropComments);
+    console.log('Tables successfully deleted');
+  } catch (error) {
+    console.log('comment doesn\'t exist');
+  }
+}
+
+async function deleteTag() {
+  try {
+    await pool.query(dropTags);
+    console.log('Tables successfully deleted');
+  } catch (error) {
+    console.log('tag doesn\'t exist');
+  }
+}
+
+async function deleteImage() {
+  try {
+    await pool.query(dropImages);
+    console.log('Tables successfully deleted');
+  } catch (error) {
+    console.log('image doesn\'t exist');
+  }
+}
 deletemeetup();
 deletequestion();
 deletevote();
 deletersvp();
 deleteuser();
+deleteComment();
+deleteTag();
+deleteImage();
