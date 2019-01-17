@@ -113,10 +113,10 @@ class Validate {
           error: err.details[0].message,
         });
       }
-      if (Util.stringIsNumber(questionid)) {
+      if (!Number.isInteger(Number(questionid))) {
         return res.status(400).json({
           status: 400,
-          error: 'status should not be a number',
+          error: 'questionid should be an integer',
         });
       }
       else next();
