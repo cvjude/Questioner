@@ -129,9 +129,9 @@ describe('Questioner', () => {
     it('/:id should not get all meetup records if credentails are wrong', (done) => {
       chai.request(app)
         .get('/api/v1/meetups/upcoming')
-        .set('authorization', `Bearer ${ userToken }`)
+        .set('authorization', `Bearer ${ null }`)
         .end((err, res) => {
-          expect(res.statusCode).to.equal(400);
+          expect(res.statusCode).to.equal(401);
           done();
         });
     });
