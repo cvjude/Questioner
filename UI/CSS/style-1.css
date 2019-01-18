@@ -535,3 +535,8 @@ footer{
 	background-color: grey;
 	color:white;
 }
+
+#bold{
+	color:white;
+	font-size: 30px
+}
