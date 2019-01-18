@@ -2,6 +2,7 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 import app from '../app';
 import testMeetups from './testdata/testMeetups';
+import testComments from './testdata/testComments';
 import testQuestions from './testdata/testQuestions';
 import newData from './testdata/newData';
 import testRsvp from './testdata/testRsvp';
@@ -172,73 +173,122 @@ describe('Questioner', () => {
           done();
         });
     });
+  });
 
-    describe('/POST/api/v1/questions', () => {
-      it('user should be able to post a question', (done) => {
-        chai.request(app)
-          .post('/api/v1/questions')
-          .set('Authorization', `Bearer ${ userToken }`)
-          .send(newData[1])
-          .end((err, res) => {
-            expect(res.statusCode).to.equal(201);
-            done();
-          });
-      });
-
-    
-
-      it('user should not post if title field is blank', (done) => {
-        chai.request(app)
-          .post('/api/v1/questions')
-          .send(testQuestions[1])
-          .end((err, res) => {
-            expect(res.statusCode).to.equal(400);
-            expect(res.body.status).to.equal(400);
-            expect(res.body.error).to.equal('"title" is not allowed to be empty');
-            done();
-          });
-      });
-
-
-      it('user should not post if body field is blank', (done) => {
-        chai.request(app)
-          .post('/api/v1/questions')
-          .send(testQuestions[2])
-          .end((err, res) => {
-            expect(res.statusCode).to.equal(400);
-            expect(res.body.status).to.equal(400);
-            expect(res.body.error).to.equal('"body" is not allowed to be empty');
-            done();
-          });
-      });
-
-
-      it('user should not post if meetupid is not a number', (done) => {
-        chai.request(app)
-          .post('/api/v1/questions')
-          .send(testQuestions[4])
-          .end((err, res) => {
-            expect(res.statusCode).to.equal(400);
-            expect(res.body.status).to.equal(400);
-            expect(res.body.error).to.equal('"meetup" must be a number');
-            done();
-          });
-      });
+  describe('/POST/api/v1/questions', () => {
+    it('user should be able to post a question', (done) => {
+      chai.request(app)
+        .post('/api/v1/questions')
+        .set('Authorization', `Bearer ${ userToken }`)
+        .send(newData[1])
+        .end((err, res) => {
+          expect(res.statusCode).to.equal(201);
+          done();
+        });
     });
 
-    describe('/POST/api/v1/meetups/:id/rsvps', () => {
-      it('user should not post if status field is blank', (done) => {
-        chai.request(app)
-          .post('/api/v1/meetups/1/rsvps')
-          .send(testRsvp[1])
-          .end((err, res) => {
-            expect(res.statusCode).to.equal(400);
-            expect(res.body.status).to.equal(400);
-            expect(res.body.error).to.equal('"status" is required');
-            done();
-          });
-      });
+  
 
+    it('user should not post if title field is blank', (done) => {
+      chai.request(app)
+        .post('/api/v1/questions')
+        .send(testQuestions[1])
+        .end((err, res) => {
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.error).to.equal('"title" is not allowed to be empty');
+          done();
+        });
+    });
+
+
+    it('user should not post if body field is blank', (done) => {
+      chai.request(app)
+        .post('/api/v1/questions')
+        .send(testQuestions[2])
+        .end((err, res) => {
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.error).to.equal('"body" is not allowed to be empty');
+          done();
+        });
+    });
+
+
+    it('user should not post if meetupid is not a number', (done) => {
+      chai.request(app)
+        .post('/api/v1/questions')
+        .send(testQuestions[4])
+        .end((err, res) => {
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.error).to.equal('"meetup" must be a number');
+          done();
+        });
     });
   });
+
+  describe('/POST/api/v1/meetups/:id/rsvps', () => {
+    it('user should not post if status field is blank', (done) => {
+      chai.request(app)
+        .post('/api/v1/meetups/1/rsvps')
+        .send(testRsvp[0])
+        .end((err, res) => {
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.error).to.equal('"status" is required');
+          done();
+        });
+     });
+
+      it('user should not post if fields are correct', (done) => {
+        chai.request(app)
+          .post('/api/v1/meetups/1/rsvps')
+          .set('authorization', `Bearer ${ userToken }`)
+          .send(testRsvp[1])
+          .end((err, res) => {
+            expect(res.statusCode).to.equal(201);
+            expect(res.body.status).to.equal(201);
+            done();
+          });
+      });
+  });
+
+ describe('/POST/api/v1/comments', () => {
+    it('user should not post if fields are correct', (done) => {
+      chai.request(app)
+        .post('/api/v1/comments')
+        .send(testComments[1])
+        .end((err, res) => {
+          expect(res.statusCode).to.equal(400);
+          expect(res.body.status).to.equal(400);
+          done();
+        });
+    });
+
+      it('user should not post if fields are correct', (done) => {
+        chai.request(app)
+          .post('/api/v1/comments')
+          .set('authorization', `Bearer ${ userToken }`)
+          .send(testComments[0])
+          .end((err, res) => {
+            expect(res.statusCode).to.equal(201);
+            expect(res.body.status).to.equal(201);
+            done();
+          });
+      });
+
+      it('user should not post if question does not exist', (done) => {
+        chai.request(app)
+          .post('/api/v1/comments')
+          .set('authorization', `Bearer ${ userToken }`)
+          .send(testComments[2])
+          .end((err, res) => {
+            expect(res.statusCode).to.equal(404);
+            expect(res.body.status).to.equal(404);
+            done();
+          });
+      });
+  });
+
 });
