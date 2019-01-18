@@ -16,6 +16,8 @@ const rules = {
 
 
 const validate = (message,rules,value) => {
+    if(!value)
+        return
     if(!rules.test(value)){
         alert(message);
     } else {

@@ -108,6 +108,8 @@ label{
 	color:black;
 }
 
+
+
 .contain{
 	background-color: white;
 	height: 450px;
@@ -117,11 +119,14 @@ label{
 }
 
 #showcase{
-	background-image:url('../img/homeimg-1.png');
 	background-position: center right;
 	max-height:300px;
 	margin-bottom: 20px;
 	text-align:center;
+}
+
+#background{
+	background-image:url('../img/homeimg-1.png');
 }
 
 #showcase h2{
@@ -175,7 +180,8 @@ label{
 
 .signUpForm{
 	text-align: center;
-	width:80%;
+	width:60%;
+	margin:auto;
 	background-color: white;
 	border-radius: 8px;
 	padding:5px 5px;
@@ -356,6 +362,10 @@ label{
 	width:100%;
 }
 
+.smaller{
+	grid-gap: 1rem
+}
+
 .tag{
 	color: grey;
     background: white;
@@ -493,7 +503,7 @@ main{
 }
 
 footer{
-	margin-top:20px;
+	height:60px;
 	flex-shrink: 0;
 	background-color: white;
 	font-family: Arial, Helveica, sans-serif;

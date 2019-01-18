@@ -1,4 +1,4 @@
-const isAdmin = false;
+const isadmin = false;
 
 const button = document.querySelectorAll('.button');
 const form = document.querySelector('.can-hide');
@@ -16,8 +16,20 @@ button[0].addEventListener('click', () => {
   }
 });
 
+button[4].addEventListener('click', (event) => {
+  if (form.className === 'can-hide') {
+    button[0].textContent = 'Post Question';
+    form.style.display = 'block';
+    form.className = 'can-view';
+  } else {
+    form.style.display = 'none';
+    form.className = 'can-hide';
+    button[0].textContent = 'Add Question';
+  }
+});
+
 const start = () => {
-  if (isAdmin) {
+  if (isadmin) {
     button[0].style.display = 'none';
     rsvp.style.display = 'none';
   }

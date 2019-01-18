@@ -1,13 +1,9 @@
-const button = document.querySelectorAll('.button');
-login = button[0];
+const login = document.querySelector('.button');
 
 login.addEventListener('click', (event) =>{
     event.preventDefault();
     const username = document.getElementById('UserName').value;
     const password = document.getElementById('password').value;
-    
-    if(validate(messages.isLetter,rules.letter,username)&&validate(messages.isPassword,rules.passwordRegex,password))
-    console.log(event, username, password);
 
     fetch(
         loginURL, {
@@ -18,13 +14,16 @@ login.addEventListener('click', (event) =>{
         }
     ).then(res =>  res.json())
     .then(response =>{
-        alert(response);
-        setMessage('token', response.token)
-        const decoded = jwt_decode(response.token);
-        if(decoded.admin === false ) {
-            window.location.href = "view-all-products.html"
+        if(response.error){
+            return alert(response.error);
+        }
+        setMessage('token', response.data[0].token)
+        const decoded = jwt_decode(response.data[0].token);
+        alert('Welcome back ' + decoded.firstname);
+        if(decoded.isadmin === 'false' ) {
+            window.location.href = "main.html"
         } else {
-            window.location.href = "admin-view-products.html"
+            window.location.href = "AdminPage.html"
         }
     })
 });
