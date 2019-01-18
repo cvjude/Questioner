@@ -4,7 +4,7 @@ const testRsvp = [
 		"user" : "1"
 	},
 	{
-		"response" : "",
+		"status" : "yes",
 		"user" : "1"
 	},
 	{
