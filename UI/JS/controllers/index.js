@@ -6,7 +6,7 @@ login.addEventListener('click', (event) =>{
     const username = document.getElementById('UserName').value;
     const password = document.getElementById('password').value;
     
-    if(validate(messages.isLetter,rules.testEmail,email)&&validate(messages.isPassword,rules.passwordRegex,password))
+    if(validate(messages.isLetter,rules.letter,username)&&validate(messages.isPassword,rules.passwordRegex,password))
     console.log(event, username, password);
 
     fetch(
@@ -18,7 +18,7 @@ login.addEventListener('click', (event) =>{
         }
     ).then(res =>  res.json())
     .then(response =>{
-        document.getElementById("errorDetails").innerHTML = response.message;
+        alert(response);
         setMessage('token', response.token)
         const decoded = jwt_decode(response.token);
         if(decoded.admin === false ) {

@@ -7,7 +7,7 @@ const messages = {
 
 const rules = {
 
-    testEmail: /^[a-z0-9][a-z0-9-_\.]+@([a-z]|[a-z0-9]?[a-z0-9-]+[a-z0-9])\.[a-z0-9]{2,10}(?:\.[a-z]{2,10})?$/,
+    Email: /^[a-z0-9][a-z0-9-_\.]+@([a-z]|[a-z0-9]?[a-z0-9-]+[a-z0-9])\.[a-z0-9]{2,10}(?:\.[a-z]{2,10})?$/,
     letter: /[a-zA-Z0-9\s]{3,50}$/,
     passwordRegex: /^[a-zA-Z0-9\s]\w{3,14}$/,
     imageUrlRegex: /(https?:\/\/.*\.(?:png|jpg))/,
